@@ -38,6 +38,45 @@
 - [ ] One-command reproduce printed on a slide (`make reproduce` / script).
 - [ ] Every teammate knows which section they present.
 
+## Concrete demo commands
+
+Start the API (terminal 1):
+```
+cd apps/api
+uvicorn app.main:app --reload --port 8000
+```
+Start the dashboard (terminal 2):
+```
+cd apps/web
+npm install
+npm run dev            # open http://localhost:5173
+```
+Reproduce every result artifact (no UI needed):
+```
+cd apps/api
+pip install -r requirements.txt
+python scripts/run_phase1.py --write-results
+python scripts/run_forecast.py --write-results
+python scripts/run_robustness.py --draws 30 --write-results
+python scripts/run_replan.py --write-results
+python scripts/run_discount_policy.py --write-results
+python scripts/run_telemetry.py --write-results
+python scripts/run_sensitivity.py --write-results
+pytest                 # 33 tests
+```
+
+## Actual numbers to quote (scenario `hidden_01`, seed 303)
+
+| Signal | Value |
+|--------|-------|
+| Inventory | 46 batches / 25,350.9 kg |
+| Plan | OPTIMAL · 87 dispatches · 20 discounts · **0 violations** · net revenue 572,204.63 |
+| vs FEFO | spoilage **−58.8%** (across train/test/hidden **−58.8%..−76.3%**); net revenue **+46%..+131%** |
+| Forecast (E1) | holdout MAPE **17.4%** vs naive 24.7–28.7% |
+| Markdown (E2) | **+200,923** vs fixed-30% rule |
+| Telemetry (E5) | ignoring excursions → 5 infeasible shipments; temp-aware → 0; price feed 626,512 → 648,001 |
+| Explainability | a plain-language reason on **every** dispatch and discount |
+
 ## Backup plan if live fails
 
 Play the recorded backup, then show the `results/hidden_summary.md` table and the
