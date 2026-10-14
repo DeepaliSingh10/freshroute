@@ -30,19 +30,28 @@ and capacity. Every plan is **explainable** and compared against a **documented 
 5. **Prove robustness** with Monte Carlo over shelf-life/travel-time/demand uncertainty and
    a live replan path.
 
-## Quickstart (once scaffolded)
+## Current status
+
+- **Web dashboard (`apps/web/`)** — implemented and runnable now, frontend-only. It runs on
+  clearly-labelled **demo data** by default and auto-switches to live data if the API is up.
+  See `apps/web/README.md`.
+- **API (`apps/api/`)** — a placeholder; no endpoints are implemented yet. Because of this the
+  dashboard badges every value as demo data and labels the `/explain` and `/replan` paths as
+  simulated. No simulated number is presented as a verified result.
+
+## Quickstart
 
 ```
-# API
+# Web (works standalone on demo data — default when no API is running)
+cd apps/web
+npm install
+npm run dev            # http://localhost:5173   (add ?demo=1 to force demo mode)
+
+# API (not implemented yet — placeholder only)
 cd apps/api
 python -m venv .venv && .venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
-
-# Web
-cd apps/web
-npm install
-npm run dev
 ```
 
 ## Team
