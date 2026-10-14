@@ -115,9 +115,14 @@ Per scenario, spoilage falls **58.8%–76.3%** vs FEFO while fulfillment stays o
   `POST /replan`, `GET /explain`, `POST /sensitivity`. Run: `uvicorn app.main:app --reload`.
 - **Shared scenario registry** `app/data/scenarios.py` (single source for API + scripts);
   `scripts/run_phase1.py` now imports it (identical results).
-- **pytest suite** `apps/api/tests/` — **33 tests, all passing**: cost model, LP optimizer,
+- **pytest suite** `apps/api/tests/` — **38 tests, all passing**: cost model, LP optimizer,
   all four baselines, determinism, degraded/perturbed data, disruption replan, forecast backtest,
-  and every HTTP endpoint (incl. unknown-scenario 404 and `/plan` determinism).
+  the reproducibility manifest, and every HTTP endpoint (incl. unknown-scenario 404 and
+  `/plan` determinism).
+- **Reproducibility harness** `app/repro.py` + `scripts/run_all.py`: regenerates every
+  `results/` artifact and writes `results/manifest.json` (cost-model hash + environment +
+  SHA-256 per artifact); `tests/test_reproducibility.py` fails on drift. `results/README.md`
+  documents each file. (Regeneration also fixed a stale `cost_model_hash` in `phase1_summary.json`.)
 - Smoke check: `/health` hash `cef90379ab1f`; `hidden_01` = 46 batches / 25,350.9 kg;
   `/plan` OPTIMAL, 87 dispatches, 20 discounts, **0 violations**, net revenue 572,204.63.
 

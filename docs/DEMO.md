@@ -62,8 +62,9 @@ python scripts/run_replan.py --write-results
 python scripts/run_discount_policy.py --write-results
 python scripts/run_telemetry.py --write-results
 python scripts/run_sensitivity.py --write-results
-pytest                 # 33 tests
+pytest                 # 38 tests
 ```
+Or regenerate everything at once: `python scripts/run_all.py` (writes `results/manifest.json`).
 
 ## Actual numbers to quote (scenario `hidden_01`, seed 303)
 

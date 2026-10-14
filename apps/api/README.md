@@ -33,6 +33,7 @@ app/
     schemas.py        # Pydantic v2 response models (frozen HTTP contract)
     service.py        # assembles responses from the optimizer/eval layers
   main.py             # FastAPI app factory + CORS + endpoints
+  repro.py            # reproducibility harness (env stamp + artifact manifest)
 tests/                # pytest suite (cost model, optimizer, baselines, API, ...)
 scripts/
   run_phase1.py       # generate -> baseline -> optimize -> evaluate -> discounts
@@ -42,6 +43,7 @@ scripts/
   run_discount_policy.py # E2: optimized markdown vs fixed rule
   run_telemetry.py    # E5: cold-chain telemetry + market-price feed
   run_sensitivity.py  # one-factor sensitivity curves for the UI
+  run_all.py          # regenerate every artifact + write results/manifest.json
 ```
 
 ## Setup
@@ -137,12 +139,22 @@ build can call it directly. The React dashboard (`apps/web`) consumes exactly th
 
 ```
 pip install -r requirements.txt
-pytest                        # 33 tests
+pytest                        # 38 tests
 ```
 
 Covers the cost-model loader, LP optimizer, all baseline strategies, deterministic output,
-degraded/perturbed data, disruption replanning, the forecast backtest, and every HTTP endpoint
-(including 404 and `/plan` determinism).
+degraded/perturbed data, disruption replanning, the forecast backtest, the reproducibility
+manifest, and every HTTP endpoint (including 404 and `/plan` determinism).
+
+## Reproducibility
+
+```
+python scripts/run_all.py     # regenerates every results/ artifact + manifest.json
+pytest tests/test_reproducibility.py -q
+```
+
+`results/manifest.json` pins the cost-model hash, the environment and a SHA-256 per artifact;
+the test fails if any result drifts. See `../../results/README.md`.
 
 ## Next
 - Owner C (React/TS dashboard) is built in `apps/web` (see its README).

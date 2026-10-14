@@ -1,0 +1,54 @@
+{
+  "artifacts": {
+    "discount_policy_summary.json": {
+      "command": "python scripts/run_discount_policy.py --write-results",
+      "present": true,
+      "sha256": "cd5f705c986c534784ff22d7a56122472bae311ac157b970cd76f5d0cf723cc2"
+    },
+    "forecast_summary.json": {
+      "command": "python scripts/run_forecast.py --write-results",
+      "present": true,
+      "sha256": "db701dfb2e1385df144649785c780b5b741bcaf89f55b3e529ba359333951b8d"
+    },
+    "phase1_summary.json": {
+      "command": "python scripts/run_phase1.py --no-clearance --write-results",
+      "present": true,
+      "sha256": "3a9f79937ae7a1743ce3e27981f089189f134c33363d0a2c71afb65b27806286"
+    },
+    "phase2_summary.json": {
+      "command": "python scripts/run_phase1.py --write-results",
+      "present": true,
+      "sha256": "77b126ce77f56c911c36858ffec84253d224e277982b9d2289ac388a8ccfadc5"
+    },
+    "replan_summary.json": {
+      "command": "python scripts/run_replan.py --write-results",
+      "present": true,
+      "sha256": "4f945ff5fdae5e3f1f1cff9ab8f21c3c5c63337a9fc9fd581d7f800144452cc1"
+    },
+    "robustness.json": {
+      "command": "python scripts/run_robustness.py --draws 30 --write-results",
+      "present": true,
+      "sha256": "8e1aabc2adc99b1e6ec999e9f99426928b773fb26507da4098e19cd17e3e96b8"
+    },
+    "sensitivity_summary.json": {
+      "command": "python scripts/run_sensitivity.py --write-results",
+      "present": true,
+      "sha256": "fb6774c105019fc7ae12de19f63478438ab723b85b16012a4257bda631fd0c78"
+    },
+    "telemetry_summary.json": {
+      "command": "python scripts/run_telemetry.py --write-results",
+      "present": true,
+      "sha256": "1a43354675815bc0eb49645810c240dcc5533e22b2aa0e215e3017533bcbdc2e"
+    }
+  },
+  "cost_model_hash": "cef90379ab1f",
+  "environment": {
+    "fastapi": "0.141.1",
+    "numpy": "2.2.6",
+    "ortools": "9.15.6755",
+    "pandas": "2.3.0",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.5",
+    "yaml": "6.0.3"
+  }
+}
