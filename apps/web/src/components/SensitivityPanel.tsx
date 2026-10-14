@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { DataSource, PlanResponse } from '../api/types';
+import type { DataSource, PlanResponse, RobustnessBand } from '../api/types';
 import { evaluateDelta } from '../utils/metrics';
 import { sensitivityRange, simulatePlan, type SensitivityInputs } from '../utils/simulate';
 import { formatCurrency, formatKg, formatPercent } from '../utils/format';
@@ -8,11 +8,13 @@ import UncertaintyBand from './UncertaintyBand';
 interface SensitivityPanelProps {
   plan: PlanResponse;
   source: DataSource;
+  /** Real E4 Monte-Carlo band (POST /robustness), or null to fall back to the local model. */
+  robustness?: RobustnessBand | null;
 }
 
 const DEFAULTS: SensitivityInputs = { demandMultiplier: 1, travelDelayHours: 0, priceShockPct: 0 };
 
-export default function SensitivityPanel({ plan, source }: SensitivityPanelProps) {
+export default function SensitivityPanel({ plan, source, robustness }: SensitivityPanelProps) {
   const [inputs, setInputs] = useState<SensitivityInputs>(DEFAULTS);
 
   const simulation = useMemo(() => simulatePlan(plan, inputs), [plan, inputs]);
@@ -136,7 +138,18 @@ export default function SensitivityPanel({ plan, source }: SensitivityPanelProps
       )}
 
       <div className="chart-grid chart-grid--single">
-        <UncertaintyBand low={range.low} point={range.point} high={range.high} />
+        {robustness ? (
+          <UncertaintyBand
+            low={robustness.net_revenue_p10}
+            point={robustness.net_revenue_mean}
+            high={robustness.net_revenue_p90}
+            mode="monte-carlo"
+            draws={robustness.draws}
+            scenarioId={robustness.scenario_id}
+          />
+        ) : (
+          <UncertaintyBand low={range.low} point={range.point} high={range.high} />
+        )}
       </div>
 
       <details className="assumptions">

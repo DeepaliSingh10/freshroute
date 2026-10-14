@@ -16,6 +16,8 @@ import type {
   ReplanEvent,
   ReplanResponse,
   ReplanResult,
+  RobustnessResponse,
+  RobustnessResult,
   Scenario,
   Sourced,
 } from './types';
@@ -166,6 +168,29 @@ export async function replan(scenarioId: string, event: ReplanEvent): Promise<Re
       body: JSON.stringify({ scenario_id: scenarioId, event }),
     });
     return { available: true, data };
+  } catch (error) {
+    return { available: false, data: null, error: errorMessage(error) };
+  }
+}
+
+/**
+ * Attempt the optional `/robustness` endpoint (E4 Monte Carlo). No demo fallback:
+ * the band must come from the real seeded harness, so on failure we return
+ * `available: false` and the UI keeps its clearly-labelled illustrative band.
+ */
+export async function getRobustness(
+  scenarioIds: string[],
+  draws: number,
+): Promise<RobustnessResult> {
+  if (demoRequested()) {
+    return { available: false, data: null, error: 'Demo mode — /robustness endpoint not connected.' };
+  }
+  try {
+    const data = await request<RobustnessResponse>('/robustness', {
+      method: 'POST',
+      body: JSON.stringify({ scenario_ids: scenarioIds, draws }),
+    });
+    return { available: true, data: data.band };
   } catch (error) {
     return { available: false, data: null, error: errorMessage(error) };
   }

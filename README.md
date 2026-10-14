@@ -41,8 +41,8 @@ and capacity. Every plan is **explainable** and compared against a **documented 
 ## Current status
 
 - **API (`apps/api/`)** — complete. FastAPI service exposing `/health`, `/scenarios`,
-  `/inventory`, `/plan`, `/evaluate`, `/replan`, `/explain`, `/sensitivity`; 41 passing tests;
-  deterministic results under `results/`.
+  `/inventory`, `/plan`, `/evaluate`, `/robustness`, `/replan`, `/explain`, `/sensitivity`;
+  42 passing tests; deterministic results under `results/`.
 - **Dashboard (`apps/web/`)** — complete. Scenario picker, KPI cards, dispatch table, discount
   cards, baseline-vs-optimized charts, explainability drawer, sensitivity panel, replan feed.
   It calls the live API and falls back to clearly-labelled **demo** data only when the API is

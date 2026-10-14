@@ -107,15 +107,17 @@ set these in your shell or Vite `.env.local`:
 
 Implemented: scenario selector + Optimize, KPI cards, sortable/filterable dispatch table,
 discount recommendations, baseline-vs-optimized charts, per-dispatch/discount **explainability
-drawer**, **sensitivity** sliders with an illustrative uncertainty range, **replan** event feed,
-API status banner, and loading/empty/error states. Demo data is deterministic and labelled.
+drawer**, **sensitivity** sliders, a net-revenue **uncertainty band** backed by the live E4
+Monte-Carlo endpoint (`POST /robustness`), **replan** event feed, API status banner, and
+loading/empty/error states. Demo data is deterministic and labelled.
 
 Deferred to later Workstream C phases: map view and any backend-dependent results.
 
 ## Honesty rules (enforced in code)
 
 - Demo/illustrative values are never presented as verified results (badges + notices + footer).
-- No statistical confidence intervals are fabricated: the uncertainty band is explicitly the
-  spread of a disclosed local model across input bounds, and `robustness` is omitted from demo
-  evaluation data.
+- No statistical confidence intervals are fabricated. When the live E4 endpoint is available the
+  band shows the **real** seeded Monte-Carlo P10–P90 (labelled as such); otherwise it falls back
+  to the disclosed local model's input-bound spread, clearly marked illustrative. `robustness`
+  is never fabricated in demo evaluation data.
 - Optimizer reasoning is never invented; the explain drawer restates plan-response fields.

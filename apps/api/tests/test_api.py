@@ -122,6 +122,24 @@ def test_sensitivity(client):
     assert len(sens["curves"]["demand_multiplier"]["points"]) >= 3
 
 
+def test_robustness_contract(client):
+    body = client.post(
+        "/robustness", json={"scenario_ids": ["hidden_01"], "draws": 6}
+    ).json()
+    assert {"draws", "scenarios", "overall", "total_hard_violations", "band"} <= set(body)
+    assert body["draws"] == 6
+    assert len(body["scenarios"]) == 1
+    assert body["total_hard_violations"] == 0
+    band = body["band"]
+    assert band["scenario_id"] == "hidden_01"
+    assert band["draws"] == 6
+    # The band is a real distribution: percentiles ordered and revenue positive.
+    assert band["net_revenue_p10"] <= band["net_revenue_p90"]
+    assert band["net_revenue_mean"] > 0
+    stats = body["scenarios"][0]["metrics"]["net_revenue_opt"]
+    assert {"mean", "std", "min", "p10", "p50", "p90", "max"} <= set(stats)
+
+
 def test_unknown_scenario_404(client):
     assert client.get("/inventory", params={"scenario_id": "nope"}).status_code == 404
     assert client.post("/plan", json={"scenario_id": "nope"}).status_code == 404

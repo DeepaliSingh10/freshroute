@@ -112,11 +112,17 @@ Every discount output includes: `batch_id`, `rule_id`, `discount_pct`, `expected
 
 ## 6. Uncertainty & robustness (E4, rubric "Robustness")
 
-- Each stochastic input (`RSL`, `travel_time`, `demand`, `price`) gets a **range** (low/point/high).
-- **Monte Carlo**: sample `N=200` scenarios → distribution of net revenue, spoilage, fulfillment.
-- Report **mean and worst-case (P10)**; optionally optimize a **risk-adjusted** objective
-  (mean − λ·downside) to avoid plans that look good only on average.
-- Sensitivity UI: sliders for the ranges; the plan recomputes and shows impact.
+- Each stochastic input (`RSL`, `travel_time`, `demand`, `price`, lane capacity, missing demand)
+  has a range; the harness samples them **jointly** per draw.
+- **Monte Carlo**: `app/eval/robustness.py` draws seeded perturbation vectors and re-solves the
+  optimizer **and** the FEFO baseline per draw → distribution of net revenue, spoilage,
+  fulfillment. Every draw is seeded, so results are reproducible.
+- Report **mean and worst-case (P10)** per scenario and overall. `scripts/run_robustness.py
+  --draws 30` writes `results/robustness.json` (30 draws × 3 scenarios = 90 solves, 0 violations).
+- The **same engine** backs `POST /robustness` (default 20 draws), returning a compact
+  net-revenue band (P10 / mean / P90) that the dashboard renders directly — the UI never
+  fabricates statistics (see §8 and `apps/web/README.md`).
+- Sensitivity UI: sliders for demand/travel/price; one-factor curves from `/sensitivity`.
 
 ## 7. Replanning (E3)
 
@@ -142,6 +148,7 @@ demand and lane capacity) and re-optimizes the residual. The additive `recovery`
 | `/inventory` | GET | `?scenario_id=` (optional) | commodities + batches + destinations (M1) |
 | `/plan` | POST | `{scenario_id, include_clearance?}` | `{config_hash, now_ts, dispatches, discounts, leftover, validation, metrics}` (M2, M3, M4) |
 | `/evaluate` | POST | `{scenario_ids:[...], baseline?}` | `{per_scenario[], aggregate, robustness?}` (M5) |
+| `/robustness` | POST | `{scenario_ids?, draws?}` | E4 Monte Carlo: per-scenario + overall mean/P10/P50/P90 stats and a compact `band` for the dashboard |
 | `/replan` | POST | `{scenario_id, event:{type, payload?}}` | `{scenario_id, plan, diff[]}` (E3) |
 | `/explain` | POST | `{batch_id, destination_id}` | factor breakdown for one recommendation |
 | `/sensitivity` | POST | `{scenario_id, factor?}` | one-factor net-revenue curves (E4) |

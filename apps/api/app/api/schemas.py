@@ -263,3 +263,48 @@ class SensitivityRequest(BaseModel):
 class SensitivityResponse(BaseModel):
     scenario_id: str
     curves: Dict[str, dict]
+
+
+# ---------- robustness (E4 Monte Carlo) ----------
+class RobustnessStats(BaseModel):
+    mean: float
+    std: float
+    min: float
+    p10: float
+    p50: float
+    p90: float
+    max: float
+
+
+class RobustnessScenario(BaseModel):
+    scenario_id: str
+    split: str
+    draws: int
+    metrics: Dict[str, RobustnessStats]
+
+
+class RobustnessBand(BaseModel):
+    """Compact net-revenue uncertainty band for one scenario (drives the dashboard band)."""
+
+    scenario_id: str
+    draws: int
+    net_revenue_mean: float
+    net_revenue_p10: float
+    net_revenue_p90: float
+    net_revenue_delta_mean: float
+    net_revenue_delta_p10: float
+    spoilage_reduction_mean: float
+    spoilage_reduction_p10: float
+
+
+class RobustnessRequest(BaseModel):
+    scenario_ids: Optional[List[str]] = None
+    draws: int = 20
+
+
+class RobustnessResponse(BaseModel):
+    draws: int
+    scenarios: List[RobustnessScenario]
+    overall: Dict[str, RobustnessStats]
+    total_hard_violations: int
+    band: RobustnessBand

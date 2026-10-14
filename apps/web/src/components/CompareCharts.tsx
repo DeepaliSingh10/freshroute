@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { EvalResponse, Metrics } from '../api/types';
+import type { EvalResponse, Metrics, RobustnessBand } from '../api/types';
 import { evaluateDelta } from '../utils/metrics';
 import {
   formatCurrency,
@@ -20,6 +20,8 @@ import {
 
 interface CompareChartsProps {
   evaluation: EvalResponse;
+  /** Real E4 Monte-Carlo band (POST /robustness). */
+  robustness?: RobustnessBand | null;
 }
 
 const BASELINE_COLOR = '#94a3b8';
@@ -107,7 +109,7 @@ function describeDelta(delta: number, format: (value: number) => string, higherI
   return `${sign}${magnitude}`;
 }
 
-export default function CompareCharts({ evaluation }: CompareChartsProps) {
+export default function CompareCharts({ evaluation, robustness }: CompareChartsProps) {
   const row = evaluation.per_scenario[0];
   if (!row) return null;
 
@@ -176,9 +178,16 @@ export default function CompareCharts({ evaluation }: CompareChartsProps) {
         <CostBreakdown baseline={baseline} proposed={proposed} />
       </div>
 
-      {evaluation.robustness ? (
+      {robustness ? (
         <p className="chart-note">
-          Robustness (demo): mean net-revenue delta{' '}
+          Robustness (E4 Monte Carlo · {robustness.draws} seeded draws · scenario{' '}
+          {robustness.scenario_id}): mean net-revenue delta{' '}
+          <strong>{formatCurrency(robustness.net_revenue_delta_mean)}</strong>, worst-case (P10){' '}
+          <strong>{formatCurrency(robustness.net_revenue_delta_p10)}</strong>.
+        </p>
+      ) : evaluation.robustness ? (
+        <p className="chart-note">
+          Robustness: mean net-revenue delta{' '}
           <strong>{formatCurrency(evaluation.robustness.net_revenue_mean)}</strong>, worst-case (P10){' '}
           <strong>{formatCurrency(evaluation.robustness.net_revenue_p10)}</strong>.
         </p>

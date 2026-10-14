@@ -85,8 +85,9 @@ python scripts/run_phase1.py --write-csv --write-results
   maximize expected recovered value under uncertainty; **+200,923** vs the fixed 30% rule.
 - **E3 Disruption replan** (`run_replan.py`): keep committed shipments, re-optimize the residual
   stock on the disrupted network; hub outage + 6h delay → spoilage −20.4%, net rev +213,504, 0 violations.
-- **E4 Monte Carlo robustness** (`run_robustness.py`): 30 draws × 3 scenarios; mean spoilage
-  reduction −57.7% (P10 −46.3%), net-rev delta mean +331,772 (P10 +271,309), 0 violations.
+- **E4 Monte Carlo robustness** (`run_robustness.py`, a CLI over `app/eval/robustness.py`): 30
+  draws × 3 scenarios; mean spoilage reduction −57.7% (P10 −46.3%), net-rev delta mean +331,772
+  (P10 +271,309), 0 violations. The same engine backs `POST /robustness`.
 - **E5 Cold-chain telemetry + price feed** (`run_telemetry.py`): temperature excursions cost
   10.4 batch-days of life; ignoring them gives 5 infeasible shipments (temp-aware replan: 0).
   A market-price walk lifts net revenue 626,512 → 648,001.
@@ -129,6 +130,7 @@ uvicorn app.main:app --reload --port 8000
 | GET  | `/inventory` | `?scenario_id=` (optional) | `{commodities, batches, destinations, ...}` |
 | POST | `/plan` | `{scenario_id, include_clearance?}` | `{config_hash, now_ts, dispatches, discounts, leftover, validation, metrics}` |
 | POST | `/evaluate` | `{scenario_ids:[...], baseline?}` | `{per_scenario[], aggregate, robustness?}` |
+| POST | `/robustness` | `{scenario_ids?, draws?}` (default 20) | E4 Monte Carlo: per-scenario + overall mean/std/P10/P50/P90 stats, `band`, `total_hard_violations` |
 | POST | `/replan` | `{scenario_id, event:{type, payload?}}` | `{scenario_id, plan, diff[]}` (E3 event-driven) |
 | POST | `/explain` | `{batch_id, destination_id}` | factor breakdown for one recommendation |
 | POST | `/sensitivity` | `{scenario_id, factor?}` | one-factor net-revenue curves |
@@ -143,7 +145,7 @@ this service was adapted to the dashboard's frozen contract (see `docs/WORKSTREA
 
 ```
 pip install -r requirements.txt
-pytest                        # 41 tests
+pytest                        # 42 tests
 ```
 
 Covers the cost-model loader, LP optimizer, all baseline strategies, deterministic output,

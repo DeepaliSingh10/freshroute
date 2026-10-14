@@ -94,6 +94,61 @@ export interface Robustness {
   net_revenue_p10: number;
 }
 
+/* ------------------------------------------------------------------ *
+ * E4 Monte-Carlo robustness (POST /robustness). Additive endpoint that
+ * re-solves the optimizer under seeded perturbations and returns real
+ * distribution statistics — drives the dashboard's uncertainty band.
+ * ------------------------------------------------------------------ */
+
+export interface RobustnessStats {
+  mean: number;
+  std: number;
+  min: number;
+  p10: number;
+  p50: number;
+  p90: number;
+  max: number;
+}
+
+export interface RobustnessScenario {
+  scenario_id: string;
+  split: string;
+  draws: number;
+  metrics: Record<string, RobustnessStats>;
+}
+
+/** Compact net-revenue uncertainty band for one scenario. */
+export interface RobustnessBand {
+  scenario_id: string;
+  draws: number;
+  net_revenue_mean: number;
+  net_revenue_p10: number;
+  net_revenue_p90: number;
+  net_revenue_delta_mean: number;
+  net_revenue_delta_p10: number;
+  spoilage_reduction_mean: number;
+  spoilage_reduction_p10: number;
+}
+
+export interface RobustnessResponse {
+  draws: number;
+  scenarios: RobustnessScenario[];
+  overall: Record<string, RobustnessStats>;
+  total_hard_violations: number;
+  band: RobustnessBand;
+}
+
+/**
+ * Result of *attempting* the optional `/robustness` endpoint. No demo fallback:
+ * Monte-Carlo statistics must come from the real harness, so `available: false`
+ * makes the UI keep its clearly-labelled illustrative band instead.
+ */
+export interface RobustnessResult {
+  available: boolean;
+  data: RobustnessBand | null;
+  error?: string;
+}
+
 export interface EvalResponse {
   per_scenario: PerScenarioEval[];
   aggregate: EvalAggregate;

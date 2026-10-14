@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { explain, getEvaluation, getHealth, getInventory, getPlan, getScenarios } from '../api/client';
+import {
+  explain,
+  getEvaluation,
+  getHealth,
+  getInventory,
+  getPlan,
+  getRobustness,
+  getScenarios,
+} from '../api/client';
 import type {
   Batch,
   Commodity,
@@ -9,6 +17,7 @@ import type {
   EvalResponse,
   InventoryResponse,
   PlanResponse,
+  RobustnessBand,
   Scenario,
 } from '../api/types';
 import ApiStatusBanner, { type ApiStatus } from '../components/ApiStatusBanner';
@@ -27,6 +36,9 @@ import { buildDiscountExplain, buildDispatchExplain, type ExplainModel } from '.
 type LoadStatus = 'loading' | 'error' | 'ready';
 type RunStatus = 'idle' | 'loading' | 'error' | 'ready';
 
+/** Seeded draws for the E4 Monte-Carlo band (matches the harness's reproducibility scale). */
+const ROBUSTNESS_DRAWS = 20;
+
 function describeError(error: unknown): string {
   if (error instanceof Error) return error.message;
   return 'Unexpected error';
@@ -42,6 +54,7 @@ export default function Dashboard() {
   const [runStatus, setRunStatus] = useState<RunStatus>('idle');
   const [plan, setPlan] = useState<PlanResponse | null>(null);
   const [evaluation, setEvaluation] = useState<EvalResponse | null>(null);
+  const [robustness, setRobustness] = useState<RobustnessBand | null>(null);
   const [runSource, setRunSource] = useState<DataSource>('live');
   const [runNotice, setRunNotice] = useState<string | null>(null);
   const [runError, setRunError] = useState('');
@@ -56,6 +69,7 @@ export default function Dashboard() {
 
   const runIdRef = useRef(0);
   const explainIdRef = useRef(0);
+  const robustnessIdRef = useRef(0);
 
   const loadScenarios = useCallback(async () => {
     setScenariosStatus('loading');
@@ -136,11 +150,29 @@ export default function Dashboard() {
     }
   }, [selectedId]);
 
+  // Fetch the real E4 Monte-Carlo band in the background once a plan is ready.
+  // Never blocks the main run; on failure the panel keeps its illustrative band.
+  useEffect(() => {
+    if (runStatus !== 'ready' || !plan) {
+      setRobustness(null);
+      return;
+    }
+    const id = robustnessIdRef.current + 1;
+    robustnessIdRef.current = id;
+
+    void (async () => {
+      const result = await getRobustness([plan.scenario_id], ROBUSTNESS_DRAWS);
+      if (id !== robustnessIdRef.current) return;
+      setRobustness(result.available ? result.data : null);
+    })();
+  }, [runStatus, plan]);
+
   function handleSelect(scenarioId: string) {
     setSelectedId(scenarioId);
     setRunStatus('idle');
     setPlan(null);
     setEvaluation(null);
+    setRobustness(null);
     setRunNotice(null);
     setRunError('');
     setExplainModel(null);
@@ -341,7 +373,9 @@ export default function Dashboard() {
               degraded={plan.validation.degraded}
             />
 
-            {evaluation ? <CompareCharts evaluation={evaluation} /> : null}
+            {evaluation ? (
+              <CompareCharts evaluation={evaluation} robustness={robustness} />
+            ) : null}
 
             <DispatchTable
               dispatches={plan.dispatches}
@@ -357,7 +391,7 @@ export default function Dashboard() {
             />
 
             <div className="whatif-grid">
-              <SensitivityPanel plan={plan} source={runSource} />
+              <SensitivityPanel plan={plan} source={runSource} robustness={robustness} />
               <ReplanFeed plan={plan} />
             </div>
           </div>

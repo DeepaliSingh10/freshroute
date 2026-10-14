@@ -11,6 +11,7 @@ Endpoints (frozen B<->C contract; see docs/WORKSTREAMS.md):
     POST /evaluate    {scenario_ids:[...]}      -> {per_scenario, aggregate, robustness?}
     POST /replan      {scenario_id, event}      -> {scenario_id, plan, diff}
     POST /explain     {batch_id, destination_id}-> ExplainResponse
+    POST /robustness  {scenario_ids?, draws?}   -> E4 Monte Carlo band (additive)
     POST /sensitivity {scenario_id, factor?}    -> {scenario_id, curves}  (additive tooling)
 """
 
@@ -86,6 +87,14 @@ def create_app() -> FastAPI:
     def sensitivity_ep(req: schemas.SensitivityRequest) -> dict:
         _guard(req.scenario_id)
         return service.sensitivity_response(req.scenario_id, factor=req.factor)
+
+    @app.post("/robustness", response_model=schemas.RobustnessResponse)
+    def robustness_ep(req: schemas.RobustnessRequest) -> dict:
+        ids = list(req.scenario_ids or [])
+        for sid in ids:
+            _guard(sid)
+        draws = max(1, min(int(req.draws), 200))
+        return service.robustness_response(ids, draws=draws)
 
     return app
 

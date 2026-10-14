@@ -78,6 +78,8 @@ report **mean** and **worst-case (P10)**; show plan *stability* under input rang
 **How we win:**
 - Monte Carlo over shelf-life/travel-time/demand/price/capacity perturbations (E4) —
   `scripts/run_robustness.py` → `results/robustness.json` (30 draws × 3 scenarios, seeded).
+  The same seeded engine is exposed live at `POST /robustness` and rendered as the dashboard
+  uncertainty band, so the jury sees the distribution, not just a point estimate.
 - Replan on disruption (E3) — `scripts/run_replan.py` → `results/replan_summary.json`: keeps
   still-valid committed shipments and re-optimizes the residual stock on the disrupted network.
 - Optimized markdown (E2) — `scripts/run_discount_policy.py` → `results/discount_policy_summary.json`:

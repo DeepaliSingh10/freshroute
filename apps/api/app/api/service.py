@@ -21,7 +21,7 @@ from ..optimizer.replan import Disruption, apply_disruption, keep_dispatched, re
 from ..optimizer.types import Plan
 from ..eval.checker import check_plan
 from ..eval.metrics import compare, compute_metrics
-from ..eval import sensitivity
+from ..eval import robustness, sensitivity
 
 VERSION = "0.2.0"
 
@@ -487,6 +487,16 @@ def explain_response(batch_id: str, destination_id: str = "") -> dict:
         "factors": factors,
         "constraints": constraints,
     }
+
+
+# --------------------------------------------------------------------------- #
+# Robustness (E4 Monte Carlo; feeds the dashboard uncertainty band)
+# --------------------------------------------------------------------------- #
+def robustness_response(scenario_ids: Optional[List[str]] = None, draws: int = 20) -> dict:
+    cm = get_cost_model()
+    report = robustness.run(cm, draws, scenario_ids or None)
+    primary = (scenario_ids or [None])[0]
+    return {**report, "band": robustness.band(report, primary)}
 
 
 # --------------------------------------------------------------------------- #

@@ -154,4 +154,21 @@ Per scenario, spoilage falls **58.8%–76.3%** vs FEFO while fulfillment stays o
 - Docs reconciled to the single frozen contract: `WORKSTREAMS.md`, `ARCHITECTURE.md`,
   `README.md`, `apps/api/README.md`, `apps/web/README.md`, `docs/DEMO.md`.
 
+## E4 robustness exposure — API + dashboard ✅ (done)
+- Extracted the Monte Carlo engine into `app/eval/robustness.py` (shared by the harness and the
+  API); `scripts/run_robustness.py` is now a thin CLI over it and still writes a **byte-identical**
+  `results/robustness.json` (30 draws × 3 scenarios, verified against the committed artifact), so
+  `tests/test_reproducibility.py` stays green.
+- Added `POST /robustness` (`{scenario_ids?, draws?}`, default 20 draws, capped at 200) →
+  per-scenario + overall mean/std/P10/P50/P90/min/max stats plus a compact `band`
+  (P10 / mean / P90 net revenue, net-revenue delta, spoilage reduction). Suite is now
+  **42 tests, passing**.
+- Wired the dashboard to real statistics: `getRobustness()` client call (live-only, no demo
+  fallback) feeds `UncertaintyBand` and the `CompareCharts` note with the seeded Monte-Carlo
+  band; the illustrative local band remains only when the endpoint is unavailable. Copy updated
+  from "illustrative" to "verified Monte-Carlo result".
+- Verified live: `/robustness` for `hidden_01` at 20 draws → P10 ₹417,483 / mean ₹515,665 /
+  P90 ₹597,092, net-revenue delta mean +₹317,324 (P10 +₹248,059), 0 violations;
+  `npm run typecheck` + `npm run build` clean.
+
 > Remaining after integration: demo rehearsal against the live stack.
