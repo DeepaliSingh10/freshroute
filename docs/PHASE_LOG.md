@@ -108,8 +108,27 @@ Per scenario, spoilage falls **58.8%–76.3%** vs FEFO while fulfillment stays o
   (demand, travel delay, price shock, lane capacity, shelf-life noise) → curves for the UI sliders.
   → `results/sensitivity_summary.json`. Every Owner A deliverable in `WORKSTREAMS.md` is now present.
 
-### Phase 2 — remaining
-- [ ] Owner B (FastAPI service + tests) and Owner C (React dashboard) integration.
+### Owner B — FastAPI service + tests ✅ (done)
+- **HTTP layer**: `app/main.py` (app factory, CORS, 404 guard) + `app/api/schemas.py`
+  (Pydantic v2 contract) + `app/api/service.py` (assembles plan/evaluate/replan/explain/sensitivity).
+  Endpoints: `GET /health`, `GET /scenarios`, `GET /inventory`, `POST /plan`, `POST /evaluate`,
+  `POST /replan`, `GET /explain`, `POST /sensitivity`. Run: `uvicorn app.main:app --reload`.
+- **Shared scenario registry** `app/data/scenarios.py` (single source for API + scripts);
+  `scripts/run_phase1.py` now imports it (identical results).
+- **pytest suite** `apps/api/tests/` — **33 tests, all passing**: cost model, LP optimizer,
+  all four baselines, determinism, degraded/perturbed data, disruption replan, forecast backtest,
+  and every HTTP endpoint (incl. unknown-scenario 404 and `/plan` determinism).
+- Smoke check: `/health` hash `cef90379ab1f`; `hidden_01` = 46 batches / 25,350.9 kg;
+  `/plan` OPTIMAL, 87 dispatches, 20 discounts, **0 violations**, net revenue 572,204.63.
+
+### Owner C — React + TypeScript dashboard ✅ (done)
+- Vite + React 18 + TS in `apps/web`; `npm run typecheck` and `npm run build` both clean.
+- Pages/panels: scenario picker, KPI cards (spoilage / fulfillment / net revenue / recovered /
+  violations), FreshRoute-vs-FEFO comparison charts, sortable dispatch table, discount cards,
+  sensitivity factor chart, disruption replan panel, and a "why this plan?" explainability drawer.
+- Talks to the FastAPI service (dev proxy `/api` → `:8000`); see `apps/web/README.md`.
+
+> Remaining after Owner A/B/C: final `docs/DEMO.md` walkthrough + demo rehearsal.
 
 ## Owner B / C
-Not started in this repo yet (Owner A phases only).
+Complete — see the sections above.

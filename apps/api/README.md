@@ -1,7 +1,7 @@
 # apps/api — FreshRoute backend
 
-Python 3.11+ · OR-Tools (GLOP) · numpy/pandas. Owner A (data + optimizer) Phases 1 and 2
-(part 1) are **done**.
+Python 3.11+ · OR-Tools (GLOP) · numpy/pandas · FastAPI.
+Owner A (data + optimizer) and Owner B (HTTP service + tests) are **done**.
 
 ## Layout
 ```
@@ -12,6 +12,9 @@ app/
     cost_model.yaml   # single source of truth for the economic cost model
     cost_model.py     # loader (config hash for reproducibility)
     generator.py      # deterministic synthetic generator + clearance outlets + perturbations
+    telemetry.py      # E5: cold-chain temperatures + market-price feed
+    scenarios.py      # shared scenario registry (train/test/hidden) for API + scripts
+    baseline_definition.yaml # frozen baseline strategy spec
   optimizer/
     feasibility.py    # shelf-life feasibility precompute (shared; include_clearance flag)
     baseline.py       # baseline strategies (fefo / margin / naive) — no clearance
@@ -26,6 +29,11 @@ app/
     metrics.py        # spoilage / fulfillment / net revenue / expired / clearance
     checker.py        # INDEPENDENT hard-constraint checker (0 violations)
     sensitivity.py    # one-factor sweeps feeding the UI sliders
+  api/
+    schemas.py        # Pydantic v2 response models (frozen HTTP contract)
+    service.py        # assembles responses from the optimizer/eval layers
+  main.py             # FastAPI app factory + CORS + endpoints
+tests/                # pytest suite (cost model, optimizer, baselines, API, ...)
 scripts/
   run_phase1.py       # generate -> baseline -> optimize -> evaluate -> discounts
   run_forecast.py     # E1: forecast backtest + predict-then-optimize
@@ -104,5 +112,37 @@ python scripts/run_telemetry.py --write-results
 > Phase 1 was near-parity vs FEFO because much spoilage is *structurally stranded*. Phase 2's
 > clearance channel converts that stranded stock into recovered revenue with no fulfillment loss.
 
+## HTTP API (Owner B)
+
+```
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+
+| Method | Path | Body / query | Returns |
+|--------|------|--------------|---------|
+| GET  | `/health` | — | status, version, `cost_model_hash` |
+| GET  | `/scenarios` | — | available scenarios (id, seed, split) |
+| GET  | `/inventory` | `?scenario_id=` | batch count + total inventory |
+| POST | `/plan` | `{scenario_id, include_clearance}` | metrics, dispatches (with reasons), discounts |
+| POST | `/evaluate` | `{scenario_id, baseline}` | optimizer vs baseline metrics + deltas |
+| POST | `/replan` | `{scenario_id, blocked_origins, travel_delay_hours}` | morning/no-replan/replan + recovery |
+| GET  | `/explain` | `?scenario_id=` | plain-language reason per dispatch/discount |
+| POST | `/sensitivity` | `{scenario_id, factor?}` | one-factor net-revenue curves |
+
+Unknown scenario ids return **404**. CORS is open (`*`) so the Vite dev server or any static
+build can call it directly. The React dashboard (`apps/web`) consumes exactly these endpoints.
+
+## Tests
+
+```
+pip install -r requirements.txt
+pytest                        # 33 tests
+```
+
+Covers the cost-model loader, LP optimizer, all baseline strategies, deterministic output,
+degraded/perturbed data, disruption replanning, the forecast backtest, and every HTTP endpoint
+(including 404 and `/plan` determinism).
+
 ## Next
-- Owner B (FastAPI service + tests) and Owner C (React/TS dashboard).
+- Owner C (React/TS dashboard) is built in `apps/web` (see its README).

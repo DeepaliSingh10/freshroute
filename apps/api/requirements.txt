@@ -1,5 +1,13 @@
-# FreshRoute API — Owner A (data + optimizer) Phase 1 deps
+# FreshRoute API — Owner A (data + optimizer) and Owner B (service + tests)
 numpy>=1.26
 pandas>=2.0
 ortools>=9.8
 PyYAML>=6.0
+
+# Owner B — API service
+fastapi>=0.110
+uvicorn[standard]>=0.29
+
+# Owner B — tests
+pytest>=7.4
+httpx>=0.27

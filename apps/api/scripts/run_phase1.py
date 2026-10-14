@@ -18,38 +18,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from app.data.cost_model import CostModel  # noqa: E402
 from app.data.generator import generate_instance, apply_perturbations, write_instance_csv  # noqa: E402
+from app.data.scenarios import SCENARIOS  # noqa: E402
 from app.optimizer.allocator import solve_optimizer  # noqa: E402
 from app.optimizer.baseline import solve_baseline  # noqa: E402
 from app.optimizer.discounts import recommend_discounts  # noqa: E402
 from app.eval.metrics import compute_metrics, compare  # noqa: E402
 from app.eval.checker import check_plan  # noqa: E402
-
-SCENARIOS = [
-    {
-        "id": "train_01",
-        "seed": 101,
-        "split": "train",
-        "perturb": {"rsl_noise_pct": 0.05},
-    },
-    {
-        "id": "test_01",
-        "seed": 202,
-        "split": "test",
-        "perturb": {"demand_multiplier": 1.2, "travel_delay_hours": 4.0},
-    },
-    {
-        "id": "hidden_01",
-        "seed": 303,
-        "split": "hidden",
-        "perturb": {
-            "rsl_noise_pct": 0.10,
-            "demand_multiplier": 1.4,
-            "travel_delay_hours": 6.0,
-            "price_shock_pct": -0.08,
-            "missing_demand_pct": 0.03,
-        },
-    },
-]
 
 
 def run_scenario(
