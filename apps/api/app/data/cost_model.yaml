@@ -1,0 +1,30 @@
+# FreshRoute — single source of truth for the economic cost model.
+# Baseline and optimizer BOTH use this file. Swap values without code changes.
+
+# Transport: cost per kg = distance_km * transport_cost_per_kg_km (used by the generator).
+transport_cost_per_kg_km: 0.008
+
+# Handling (packing/loading) applied per kg unless a commodity overrides it.
+handling_per_kg_default: 1.2
+
+# Fraction of a spoiled batch's procurement value counted as a loss, by perishability class.
+spoilage_cost_fraction:
+  leafy: 1.0
+  berry: 1.0
+  soft_fruit: 0.9
+  root: 0.6
+  tuber: 0.6
+
+# Soft penalty used ONLY inside the optimizer objective to encourage fulfillment.
+# Excluded from reported net_revenue (see docs/EVALUATION.md).
+unmet_demand_penalty_per_kg: 2.0
+
+# Rule-based discount ladder (used from Phase 2 onward).
+discount_ladder:
+  t1_days: 3.0
+  d1: 0.15
+  t2_days: 1.5
+  d2: 0.30
+
+# Time assumed for handling/inspection at the destination, in days.
+shelf_life_buffer_days: 0.25

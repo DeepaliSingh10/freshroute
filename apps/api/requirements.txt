@@ -1,0 +1,5 @@
+# FreshRoute API — Owner A (data + optimizer) Phase 1 deps
+numpy>=1.26
+pandas>=2.0
+ortools>=9.8
+PyYAML>=6.0

@@ -112,27 +112,37 @@ temp_spike:
 7. Materialize `train`/`test` scenarios normally; build **`hidden`** scenarios that combine
    perturbations the training scenarios did not (e.g., simultaneous demand spike + delay).
 
-**Scale target:** ~200–600 batches, ~40 demands, ~40 lanes — small enough to solve in ms,
-rich enough to be non-trivial.
+**Scale target:** ~45–60 batches, ~70 demand rows, ~28 lanes — small enough to solve in ms,
+rich enough to be non-trivial. (Tunable via `generate_instance(n_origins, n_destinations)`.)
 
 ---
 
-## 4. Baseline strategy (documented, frozen)
+## 4. Baseline strategies (documented, frozen)
 
-**FEFO + nearest-feasible-first greedy** — the realistic industry default:
+We implement three greedy baselines (`app/optimizer/baseline.py`), no joint optimization:
 
+**4a. `fefo` — the STRONG baseline (official comparison).**
 ```
 1. Sort batches ascending by remaining_shelf_life_days (First-Expired-First-Out).
 2. For each batch, consider destinations with open demand it can feasibly reach
-   (shelf-life check), sorted by [highest price_per_kg, then shortest travel time].
+   (shelf-life check), sorted by [highest margin_per_kg, then shortest travel time].
 3. Allocate min(batch_remaining, destination_remaining_demand, lane_remaining_capacity).
 4. No reallocation, no optimization, no discounting; unsold quantity spoils.
 5. Compute spoilage, fulfillment, net revenue with the SAME cost model.
 ```
+Urgency-aware and shelf-life-feasible — a fair, strong default that our optimizer must beat.
 
-This baseline is *reasonable but suboptimal* — which is exactly what we must beat, and it
-mirrors what a real distributor does without decision support. Document its assumptions in the
-report so judges see a fair comparison.
+**4b. `margin` — urgency-blind.** Same as FEFO but orders batches by best achievable margin
+(ignores expiry urgency).
+
+**4c. `naive` — price-first and SHELF-LIFE-BLIND** (the real-world failure FreshRoute fixes, M3).
+Ships to the highest-price market without checking whether produce can arrive before it
+expires. Doomed cargo is reported as `expired_kg`: **zero revenue, transport/handling still
+paid, produce spoils on arrival.** Comparing against this quantifies the value of shelf-life-
+aware decision support.
+
+The report shows the optimizer against **both** `fefo` (fair, strong) and `naive`
+(value of the core capability), with all assumptions disclosed.
 
 ---
 
