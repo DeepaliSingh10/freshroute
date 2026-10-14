@@ -176,6 +176,66 @@ def _build_demands(
     return demands
 
 
+def _build_clearance_outlets(
+    cost_model: CostModel,
+    origins: Dict[str, Origin],
+    commodities: Dict[str, Commodity],
+    batches: Dict[str, Batch],
+    now: datetime,
+) -> Tuple[Dict[str, Destination], Dict[Tuple[str, str], Lane], List[Demand]]:
+    """Per-origin local clearance channel for at-risk / stranded stock."""
+    supply: Dict[Tuple[str, str], float] = {}
+    for b in batches.values():
+        supply[(b.origin_id, b.commodity_id)] = (
+            supply.get((b.origin_id, b.commodity_id), 0.0) + b.quantity_kg
+        )
+
+    dests: Dict[str, Destination] = {}
+    lanes: Dict[Tuple[str, str], Lane] = {}
+    demands: List[Demand] = []
+
+    for o in origins.values():
+        did = f"CLR-{o.origin_id}"
+        dests[did] = Destination(
+            destination_id=did,
+            name=f"{o.name} Local Clearance",
+            region="Local",
+            lat=o.lat,
+            lon=o.lon,
+            min_days_fresh_on_shelf=cost_model.clearance_min_days_fresh,
+            delivery_window_start="06:00",
+            delivery_window_end="20:00",
+            size_factor=1.0,
+            price_factor=1.0,
+            is_clearance=True,
+        )
+        lanes[(o.origin_id, did)] = Lane(
+            lane_id=f"LANE-{o.origin_id}-{did}",
+            origin_id=o.origin_id,
+            destination_id=did,
+            travel_time_hours=cost_model.clearance_travel_hours,
+            cost_per_kg=cost_model.clearance_transport_cost_per_kg,
+            capacity_kg=cost_model.clearance_lane_capacity_kg,
+            departure_window_start="04:00",
+            departure_window_end="18:00",
+        )
+        for c in commodities.values():
+            qty = supply.get((o.origin_id, c.commodity_id), 0.0)
+            if qty <= 0:
+                continue
+            demands.append(
+                Demand(
+                    destination_id=did,
+                    commodity_id=c.commodity_id,
+                    date=now.date().isoformat(),
+                    demand_kg=round(qty * cost_model.clearance_demand_fraction, 1),
+                    price_per_kg=round(c.base_price_per_kg * cost_model.clearance_price_fraction, 2),
+                    event_flag="clearance",
+                )
+            )
+    return dests, lanes, demands
+
+
 def generate_instance(
     seed: int,
     cost_model: CostModel,
@@ -184,6 +244,7 @@ def generate_instance(
     now: datetime = DEFAULT_NOW,
     n_origins: int = 4,
     n_destinations: int = 7,
+    with_clearance: bool = True,
 ) -> Instance:
     """Build a single reproducible instance from a seed."""
     rng = np.random.default_rng(seed)
@@ -193,6 +254,15 @@ def generate_instance(
     lanes = _build_lanes(rng, origins, destinations, cost_model)
     batches = _build_batches(rng, commodities, origins, now)
     demands = _build_demands(rng, commodities, destinations, batches, now)
+
+    if with_clearance:
+        clr_dests, clr_lanes, clr_demands = _build_clearance_outlets(
+            cost_model, origins, commodities, batches, now
+        )
+        destinations = {**destinations, **clr_dests}
+        lanes = {**lanes, **clr_lanes}
+        demands = demands + clr_demands
+
     return Instance(
         scenario_id=scenario_id,
         split=split,

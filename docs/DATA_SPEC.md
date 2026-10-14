@@ -47,6 +47,7 @@ and designed so every rubric metric is measurable and the hidden test is honest.
 | destination_id, name, region, lat, lon | markets/cities |
 | delivery_window_start/end | HH:MM |
 | min_days_fresh_on_shelf | buyer requires this many days on arrival |
+| is_clearance | `True` for auto-generated local clearance outlets (see below) |
 
 ### demand.csv
 `destination_id`, `commodity_id`, `date`, `window`, `demand_kg`, `price_per_kg`,
@@ -58,22 +59,37 @@ and designed so every rubric metric is measurable and the hidden test is honest.
 
 ### cost_model.yaml (the single source of truth)
 ```yaml
-transport_cost_per_kg_per_hour: 0.6
+transport_cost_per_kg_km: 0.008
 handling_per_kg_default: 1.2
-spoilage_cost_basis:                  # fraction of cost_basis charged as loss
+spoilage_cost_fraction:               # fraction of cost_basis charged as loss
   leafy: 1.0
   berry: 1.0
   soft_fruit: 0.9
-  root: 0.7
-  tuber: 0.7
-unmet_demand_penalty_per_kg: 2.0
+  root: 0.6
+  tuber: 0.6
+unmet_demand_penalty_per_kg: 10.0     # internal objective only; not in reported net_revenue
 discount_ladder:
   t1_days: 3.0
   d1: 0.15
   t2_days: 1.5
   d2: 0.30
 shelf_life_buffer_days: 0.25
+clearance:                            # local recovery channel (Phase 2, FreshRoute-only)
+  price_fraction: 0.45
+  demand_fraction: 0.35
+  travel_hours: 0.75
+  transport_cost_per_kg: 0.5
+  lane_capacity_kg: 1000000
+  min_days_fresh: 0.0
 ```
+
+### clearance outlets (Phase 2, MVP M4)
+For each origin the generator adds one **local clearance destination** (`CLR-<origin>`,
+`Destination.is_clearance = True`) plus a short lane and a capped per-commodity demand
+(`demand_kg = supply_at_origin × clearance.demand_fraction`). At-risk / stranded stock can be
+cleared near the origin at `base_price × price_fraction` instead of spoiling. This is a
+FreshRoute capability: **baselines run with `include_clearance=False`** and never use it, so the
+comparison measures the value of the recovery channel.
 
 ### baseline_definition.yaml
 Documented baseline (see §4). Frozen; both parties compute it identically.
@@ -111,6 +127,8 @@ temp_spike:
 6. Compute capacities so that **some** dispatches are infeasible (forces real decisions).
 7. Materialize `train`/`test` scenarios normally; build **`hidden`** scenarios that combine
    perturbations the training scenarios did not (e.g., simultaneous demand spike + delay).
+8. Add one **local clearance outlet per origin** (Phase 2) so at-risk/stranded stock has a
+   recovery path (`generate_instance(with_clearance=True)`).
 
 **Scale target:** ~45–60 batches, ~70 demand rows, ~28 lanes — small enough to solve in ms,
 rich enough to be non-trivial. (Tunable via `generate_instance(n_origins, n_destinations)`.)
@@ -143,6 +161,11 @@ aware decision support.
 
 The report shows the optimizer against **both** `fefo` (fair, strong) and `naive`
 (value of the core capability), with all assumptions disclosed.
+
+> **Clearance exclusion.** All baselines run with `include_clearance=False`: they represent a
+> distributor without FreshRoute's local-recovery capability, so at-risk stock simply spoils.
+> This keeps the comparison honest — the optimizer's spoilage gain is attributable to the
+> allocator, not to a channel the baseline was never allowed to use.
 
 ---
 

@@ -1,0 +1,930 @@
+{
+  "phase": "owner_A_phase2",
+  "cost_model_hash": "04778f090439",
+  "scenarios": [
+    {
+      "scenario_id": "train_01",
+      "split": "train",
+      "seed": 101,
+      "baseline_fefo": {
+        "method": "baseline_fefo",
+        "status": "OK",
+        "spoilage_kg": 7550.6,
+        "spoilage_pct": 0.3037,
+        "expired_kg": 0.0,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
+        "fulfilled_kg": 16666.5,
+        "demand_kg": 23360.4,
+        "unmet_kg": 6693.9,
+        "fulfillment_pct": 0.7135,
+        "revenue": 760207.63,
+        "transport_cost": 92461.96,
+        "handling_cost": 19999.8,
+        "spoilage_cost": 368205.18,
+        "net_revenue": 279540.69,
+        "violations": 0
+      },
+      "baseline_naive": {
+        "method": "baseline_naive",
+        "status": "OK",
+        "spoilage_kg": 9498.26,
+        "spoilage_pct": 0.382,
+        "expired_kg": 4229.4,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
+        "fulfilled_kg": 14679.1,
+        "demand_kg": 23360.4,
+        "unmet_kg": 8681.3,
+        "fulfillment_pct": 0.6284,
+        "revenue": 622209.95,
+        "transport_cost": 122691.92,
+        "handling_cost": 22690.2,
+        "spoilage_cost": 448802.99,
+        "net_revenue": 28024.84,
+        "violations": 0
+      },
+      "optimized": {
+        "method": "lp_optimizer",
+        "status": "OPTIMAL",
+        "spoilage_kg": 2851.1,
+        "spoilage_pct": 0.1147,
+        "expired_kg": 0.0,
+        "clearance_kg": 5140.7,
+        "clearance_revenue": 160814.69,
+        "fulfilled_kg": 16872.9,
+        "demand_kg": 23360.4,
+        "unmet_kg": 6487.5,
+        "fulfillment_pct": 0.7223,
+        "revenue": 928239.42,
+        "transport_cost": 89326.68,
+        "handling_cost": 26416.32,
+        "spoilage_cost": 166690.56,
+        "net_revenue": 645805.86,
+        "violations": 0
+      },
+      "delta_vs_fefo": {
+        "spoilage_pct_reduction": 0.6224,
+        "fulfillment_delta": 0.0088,
+        "net_revenue_delta": 366265.17,
+        "net_revenue_delta_pct": 1.3102,
+        "violations_total": 0
+      },
+      "delta_vs_naive": {
+        "spoilage_pct_reduction": 0.6998,
+        "fulfillment_delta": 0.0939,
+        "net_revenue_delta": 617781.02,
+        "net_revenue_delta_pct": 22.0441,
+        "violations_total": 0
+      },
+      "discounts": {
+        "count": 30,
+        "clearance_recovery": 22,
+        "expected_recovered_value": 154828.44,
+        "recommendations": [
+          {
+            "batch_id": "B0000",
+            "commodity_name": "Tomato",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 179.4,
+            "expected_recovered_value": 2260.44,
+            "reason": "Tomato batch B0000 has 1.1d shelf life; no full-price lane can deliver it in time. Clear 179kg locally at Rs12.60/kg (55% off base Rs28.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0001",
+            "commodity_name": "Tomato",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 228.7,
+            "expected_recovered_value": 2881.62,
+            "reason": "Tomato batch B0001 has 1.0d shelf life; no full-price lane can deliver it in time. Clear 229kg locally at Rs12.60/kg (55% off base Rs28.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0003",
+            "commodity_name": "Tomato",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 323.3,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0003 is at risk (2.6d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0006",
+            "commodity_name": "Tomato",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 74.1,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0006 is at risk (2.3d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0007",
+            "commodity_name": "Spinach",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 146.3,
+            "expected_recovered_value": 1448.37,
+            "reason": "Spinach batch B0007 has 1.8d shelf life; no full-price lane can deliver it in time. Clear 146kg locally at Rs9.90/kg (55% off base Rs22.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0008",
+            "commodity_name": "Spinach",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 50.0,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0008 will expire in 0.7d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0009",
+            "commodity_name": "Spinach",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 571.3,
+            "expected_recovered_value": 5655.87,
+            "reason": "Spinach batch B0009 has 1.3d shelf life; no full-price lane can deliver it in time. Clear 571kg locally at Rs9.90/kg (55% off base Rs22.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0010",
+            "commodity_name": "Spinach",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 206.9,
+            "expected_recovered_value": 2048.31,
+            "reason": "Spinach batch B0010 has 1.9d shelf life; no full-price lane can deliver it in time. Clear 207kg locally at Rs9.90/kg (55% off base Rs22.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0011",
+            "commodity_name": "Spinach",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 172.8,
+            "expected_recovered_value": 1710.72,
+            "reason": "Spinach batch B0011 has 0.8d shelf life; no full-price lane can deliver it in time. Clear 173kg locally at Rs9.90/kg (55% off base Rs22.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0012",
+            "commodity_name": "Strawberry",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 169.0,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0012 is at risk (2.6d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0013",
+            "commodity_name": "Strawberry",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 73.0,
+            "expected_recovered_value": 5913.0,
+            "reason": "Strawberry batch B0013 has 2.6d shelf life; no full-price lane can deliver it in time. Clear 73kg locally at Rs81.00/kg (55% off base Rs180.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0014",
+            "commodity_name": "Strawberry",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 197.8,
+            "expected_recovered_value": 16021.8,
+            "reason": "Strawberry batch B0014 has 0.8d shelf life; no full-price lane can deliver it in time. Clear 198kg locally at Rs81.00/kg (55% off base Rs180.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0015",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 306.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0015 will expire in 1.9d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0016",
+            "commodity_name": "Strawberry",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 440.0,
+            "expected_recovered_value": 35640.0,
+            "reason": "Strawberry batch B0016 has 2.1d shelf life; no full-price lane can deliver it in time. Clear 440kg locally at Rs81.00/kg (55% off base Rs180.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0017",
+            "commodity_name": "Strawberry",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 290.6,
+            "expected_recovered_value": 23538.6,
+            "reason": "Strawberry batch B0017 has 0.8d shelf life; no full-price lane can deliver it in time. Clear 291kg locally at Rs81.00/kg (55% off base Rs180.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0018",
+            "commodity_name": "Strawberry",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 43.8,
+            "expected_recovered_value": 3547.8,
+            "reason": "Strawberry batch B0018 has 1.8d shelf life; no full-price lane can deliver it in time. Clear 44kg locally at Rs81.00/kg (55% off base Rs180.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0022",
+            "commodity_name": "Mango",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 86.7,
+            "expected_recovered_value": 2731.05,
+            "reason": "Mango batch B0022 has 8.5d shelf life; no full-price lane can deliver it in time. Clear 87kg locally at Rs31.50/kg (55% off base Rs70.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0028",
+            "commodity_name": "Banana",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 161.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Banana batch B0028 is at risk (2.5d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0029",
+            "commodity_name": "Onion",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 808.5,
+            "expected_recovered_value": 6548.85,
+            "reason": "Onion batch B0029 has 19.6d shelf life; no full-price lane can deliver it in time. Clear 808kg locally at Rs8.10/kg (55% off base Rs18.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0030",
+            "commodity_name": "Onion",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 183.2,
+            "expected_recovered_value": 1483.92,
+            "reason": "Onion batch B0030 has 52.3d shelf life; no full-price lane can deliver it in time. Clear 183kg locally at Rs8.10/kg (55% off base Rs18.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0032",
+            "commodity_name": "Onion",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 268.6,
+            "expected_recovered_value": 2175.66,
+            "reason": "Onion batch B0032 has 41.2d shelf life; no full-price lane can deliver it in time. Clear 269kg locally at Rs8.10/kg (55% off base Rs18.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0034",
+            "commodity_name": "Onion",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 97.5,
+            "expected_recovered_value": 789.75,
+            "reason": "Onion batch B0034 has 49.1d shelf life; no full-price lane can deliver it in time. Clear 98kg locally at Rs8.10/kg (55% off base Rs18.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0035",
+            "commodity_name": "Onion",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 111.3,
+            "expected_recovered_value": 901.53,
+            "reason": "Onion batch B0035 has 11.3d shelf life; no full-price lane can deliver it in time. Clear 111kg locally at Rs8.10/kg (55% off base Rs18.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0042",
+            "commodity_name": "Cauliflower",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 139.1,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0042 is at risk (2.0d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0044",
+            "commodity_name": "Cauliflower",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 512.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0044 is at risk (2.6d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0047",
+            "commodity_name": "Grapes",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 100.4,
+            "expected_recovered_value": 4066.2,
+            "reason": "Grapes batch B0047 has 6.4d shelf life; no full-price lane can deliver it in time. Clear 100kg locally at Rs40.50/kg (55% off base Rs90.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0048",
+            "commodity_name": "Grapes",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 205.5,
+            "expected_recovered_value": 8322.75,
+            "reason": "Grapes batch B0048 has 6.7d shelf life; no full-price lane can deliver it in time. Clear 206kg locally at Rs40.50/kg (55% off base Rs90.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0050",
+            "commodity_name": "Grapes",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 288.5,
+            "expected_recovered_value": 11684.25,
+            "reason": "Grapes batch B0050 has 1.6d shelf life; no full-price lane can deliver it in time. Clear 288kg locally at Rs40.50/kg (55% off base Rs90.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0051",
+            "commodity_name": "Grapes",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 335.1,
+            "expected_recovered_value": 13571.55,
+            "reason": "Grapes batch B0051 has 4.9d shelf life; no full-price lane can deliver it in time. Clear 335kg locally at Rs40.50/kg (55% off base Rs90.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0054",
+            "commodity_name": "Okra",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 104.8,
+            "expected_recovered_value": 1886.4,
+            "reason": "Okra batch B0054 has 1.5d shelf life; no full-price lane can deliver it in time. Clear 105kg locally at Rs18.00/kg (55% off base Rs40.00) to recover value instead of spoiling."
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "test_01",
+      "split": "test",
+      "seed": 202,
+      "baseline_fefo": {
+        "method": "baseline_fefo",
+        "status": "OK",
+        "spoilage_kg": 6652.79,
+        "spoilage_pct": 0.2178,
+        "expired_kg": 0.0,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
+        "fulfilled_kg": 22837.4,
+        "demand_kg": 31167.6,
+        "unmet_kg": 8330.2,
+        "fulfillment_pct": 0.7327,
+        "revenue": 1015295.45,
+        "transport_cost": 140641.51,
+        "handling_cost": 27404.88,
+        "spoilage_cost": 231084.34,
+        "net_revenue": 616164.72,
+        "violations": 0
+      },
+      "baseline_naive": {
+        "method": "baseline_naive",
+        "status": "OK",
+        "spoilage_kg": 9854.46,
+        "spoilage_pct": 0.3226,
+        "expired_kg": 3506.5,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
+        "fulfilled_kg": 19597.7,
+        "demand_kg": 31167.6,
+        "unmet_kg": 11569.9,
+        "fulfillment_pct": 0.6288,
+        "revenue": 736004.16,
+        "transport_cost": 155990.72,
+        "handling_cost": 27725.04,
+        "spoilage_cost": 383005.54,
+        "net_revenue": 169282.87,
+        "violations": 0
+      },
+      "optimized": {
+        "method": "lp_optimizer",
+        "status": "OPTIMAL",
+        "spoilage_kg": 1575.23,
+        "spoilage_pct": 0.0516,
+        "expired_kg": 0.0,
+        "clearance_kg": 6012.5,
+        "clearance_revenue": 128806.57,
+        "fulfilled_kg": 22837.4,
+        "demand_kg": 31167.6,
+        "unmet_kg": 8330.2,
+        "fulfillment_pct": 0.7327,
+        "revenue": 1146652.38,
+        "transport_cost": 132374.8,
+        "handling_cost": 34619.88,
+        "spoilage_cost": 77492.52,
+        "net_revenue": 902165.19,
+        "violations": 0
+      },
+      "delta_vs_fefo": {
+        "spoilage_pct_reduction": 0.7632,
+        "fulfillment_delta": 0.0,
+        "net_revenue_delta": 286000.47,
+        "net_revenue_delta_pct": 0.4642,
+        "violations_total": 0
+      },
+      "delta_vs_naive": {
+        "spoilage_pct_reduction": 0.8402,
+        "fulfillment_delta": 0.1039,
+        "net_revenue_delta": 732882.32,
+        "net_revenue_delta_pct": 4.3293,
+        "violations_total": 0
+      },
+      "discounts": {
+        "count": 25,
+        "clearance_recovery": 18,
+        "expected_recovered_value": 124857.09,
+        "recommendations": [
+          {
+            "batch_id": "B0000",
+            "commodity_name": "Tomato",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 824.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0000 is at risk (2.4d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0004",
+            "commodity_name": "Tomato",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 324.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0004 is at risk (2.8d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0005",
+            "commodity_name": "Spinach",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 50.5,
+            "expected_recovered_value": 499.95,
+            "reason": "Spinach batch B0005 has 2.0d shelf life; no full-price lane can deliver it in time. Clear 50kg locally at Rs9.90/kg (55% off base Rs22.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0006",
+            "commodity_name": "Spinach",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 209.8,
+            "expected_recovered_value": 2077.02,
+            "reason": "Spinach batch B0006 has 1.6d shelf life; no full-price lane can deliver it in time. Clear 210kg locally at Rs9.90/kg (55% off base Rs22.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0007",
+            "commodity_name": "Spinach",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 186.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0007 is at risk (2.2d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0008",
+            "commodity_name": "Spinach",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 431.2,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0008 is at risk (2.8d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0009",
+            "commodity_name": "Strawberry",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 513.8,
+            "expected_recovered_value": 41617.8,
+            "reason": "Strawberry batch B0009 has 0.9d shelf life; no full-price lane can deliver it in time. Clear 514kg locally at Rs81.00/kg (55% off base Rs180.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0010",
+            "commodity_name": "Strawberry",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 135.7,
+            "expected_recovered_value": 10991.7,
+            "reason": "Strawberry batch B0010 has 2.2d shelf life; no full-price lane can deliver it in time. Clear 136kg locally at Rs81.00/kg (55% off base Rs180.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0011",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 130.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0011 will expire in 2.1d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0023",
+            "commodity_name": "Onion",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 317.8,
+            "expected_recovered_value": 2574.18,
+            "reason": "Onion batch B0023 has 49.6d shelf life; no full-price lane can deliver it in time. Clear 318kg locally at Rs8.10/kg (55% off base Rs18.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0024",
+            "commodity_name": "Onion",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 337.3,
+            "expected_recovered_value": 2732.13,
+            "reason": "Onion batch B0024 has 25.9d shelf life; no full-price lane can deliver it in time. Clear 337kg locally at Rs8.10/kg (55% off base Rs18.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0026",
+            "commodity_name": "Onion",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 217.0,
+            "expected_recovered_value": 1757.7,
+            "reason": "Onion batch B0026 has 19.1d shelf life; no full-price lane can deliver it in time. Clear 217kg locally at Rs8.10/kg (55% off base Rs18.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0030",
+            "commodity_name": "Potato",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 284.9,
+            "expected_recovered_value": 2051.28,
+            "reason": "Potato batch B0030 has 32.0d shelf life; no full-price lane can deliver it in time. Clear 285kg locally at Rs7.20/kg (55% off base Rs16.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0033",
+            "commodity_name": "Potato",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 191.0,
+            "expected_recovered_value": 1375.2,
+            "reason": "Potato batch B0033 has 27.6d shelf life; no full-price lane can deliver it in time. Clear 191kg locally at Rs7.20/kg (55% off base Rs16.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0036",
+            "commodity_name": "Potato",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 383.4,
+            "expected_recovered_value": 2760.48,
+            "reason": "Potato batch B0036 has 38.7d shelf life; no full-price lane can deliver it in time. Clear 383kg locally at Rs7.20/kg (55% off base Rs16.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0038",
+            "commodity_name": "Cauliflower",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 205.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0038 is at risk (1.9d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0040",
+            "commodity_name": "Cauliflower",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 73.2,
+            "expected_recovered_value": 988.2,
+            "reason": "Cauliflower batch B0040 has 2.2d shelf life; no full-price lane can deliver it in time. Clear 73kg locally at Rs13.50/kg (55% off base Rs30.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0041",
+            "commodity_name": "Cauliflower",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 338.9,
+            "expected_recovered_value": 4575.15,
+            "reason": "Cauliflower batch B0041 has 3.4d shelf life; no full-price lane can deliver it in time. Clear 339kg locally at Rs13.50/kg (55% off base Rs30.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0043",
+            "commodity_name": "Cauliflower",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 535.4,
+            "expected_recovered_value": 7227.9,
+            "reason": "Cauliflower batch B0043 has 1.2d shelf life; no full-price lane can deliver it in time. Clear 535kg locally at Rs13.50/kg (55% off base Rs30.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0046",
+            "commodity_name": "Grapes",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 183.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Grapes batch B0046 is at risk (2.3d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0050",
+            "commodity_name": "Okra",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 94.3,
+            "expected_recovered_value": 1697.4,
+            "reason": "Okra batch B0050 has 3.3d shelf life; no full-price lane can deliver it in time. Clear 94kg locally at Rs18.00/kg (55% off base Rs40.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0052",
+            "commodity_name": "Okra",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 9.0,
+            "expected_recovered_value": 162.0,
+            "reason": "Okra batch B0052 has 4.5d shelf life; no full-price lane can deliver it in time. Clear 9kg locally at Rs18.00/kg (55% off base Rs40.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0053",
+            "commodity_name": "Okra",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 84.2,
+            "expected_recovered_value": 1515.6,
+            "reason": "Okra batch B0053 has 3.0d shelf life; no full-price lane can deliver it in time. Clear 84kg locally at Rs18.00/kg (55% off base Rs40.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0054",
+            "commodity_name": "Okra",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 309.5,
+            "expected_recovered_value": 5571.0,
+            "reason": "Okra batch B0054 has 1.9d shelf life; no full-price lane can deliver it in time. Clear 310kg locally at Rs18.00/kg (55% off base Rs40.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0055",
+            "commodity_name": "Okra",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.55,
+            "quantity_kg": 1926.8,
+            "expected_recovered_value": 34682.4,
+            "reason": "Okra batch B0055 has 1.0d shelf life; no full-price lane can deliver it in time. Clear 1927kg locally at Rs18.00/kg (55% off base Rs40.00) to recover value instead of spoiling."
+          }
+        ]
+      }
+    },
+    {
+      "scenario_id": "hidden_01",
+      "split": "hidden",
+      "seed": 303,
+      "baseline_fefo": {
+        "method": "baseline_fefo",
+        "status": "OK",
+        "spoilage_kg": 7573.14,
+        "spoilage_pct": 0.2987,
+        "expired_kg": 0.0,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
+        "fulfilled_kg": 17376.3,
+        "demand_kg": 29095.1,
+        "unmet_kg": 11718.8,
+        "fulfillment_pct": 0.5972,
+        "revenue": 768019.51,
+        "transport_cost": 93197.19,
+        "handling_cost": 20851.56,
+        "spoilage_cost": 362729.95,
+        "net_revenue": 291240.8,
+        "violations": 0
+      },
+      "baseline_naive": {
+        "method": "baseline_naive",
+        "status": "OK",
+        "spoilage_kg": 10671.78,
+        "spoilage_pct": 0.421,
+        "expired_kg": 6268.4,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
+        "fulfilled_kg": 14239.3,
+        "demand_kg": 29095.1,
+        "unmet_kg": 14855.8,
+        "fulfillment_pct": 0.4894,
+        "revenue": 470610.48,
+        "transport_cost": 139937.17,
+        "handling_cost": 24609.24,
+        "spoilage_cost": 538135.31,
+        "net_revenue": -232071.24,
+        "violations": 0
+      },
+      "optimized": {
+        "method": "lp_optimizer",
+        "status": "OPTIMAL",
+        "spoilage_kg": 3120.3,
+        "spoilage_pct": 0.1231,
+        "expired_kg": 0.0,
+        "clearance_kg": 4854.3,
+        "clearance_revenue": 114510.6,
+        "fulfilled_kg": 17376.3,
+        "demand_kg": 29095.1,
+        "unmet_kg": 11718.8,
+        "fulfillment_pct": 0.5972,
+        "revenue": 883559.88,
+        "transport_cost": 81867.61,
+        "handling_cost": 26676.72,
+        "spoilage_cost": 202810.92,
+        "net_revenue": 572204.63,
+        "violations": 0
+      },
+      "delta_vs_fefo": {
+        "spoilage_pct_reduction": 0.588,
+        "fulfillment_delta": 0.0,
+        "net_revenue_delta": 280963.83,
+        "net_revenue_delta_pct": 0.9647,
+        "violations_total": 0
+      },
+      "delta_vs_naive": {
+        "spoilage_pct_reduction": 0.7076,
+        "fulfillment_delta": 0.1078,
+        "net_revenue_delta": 804275.87,
+        "net_revenue_delta_pct": -3.4656,
+        "violations_total": 0
+      },
+      "discounts": {
+        "count": 20,
+        "clearance_recovery": 13,
+        "expected_recovered_value": 113384.39,
+        "recommendations": [
+          {
+            "batch_id": "B0001",
+            "commodity_name": "Tomato",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 117.8,
+            "expected_recovered_value": 1365.3,
+            "reason": "Tomato batch B0001 has 1.4d shelf life; no full-price lane can deliver it in time. Clear 118kg locally at Rs11.59/kg (59% off base Rs28.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0004",
+            "commodity_name": "Tomato",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 797.6,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0004 is at risk (2.9d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0005",
+            "commodity_name": "Spinach",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 95.8,
+            "expected_recovered_value": 872.74,
+            "reason": "Spinach batch B0005 has 0.7d shelf life; no full-price lane can deliver it in time. Clear 96kg locally at Rs9.11/kg (59% off base Rs22.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0006",
+            "commodity_name": "Spinach",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 445.8,
+            "expected_recovered_value": 4061.24,
+            "reason": "Spinach batch B0006 has 0.9d shelf life; no full-price lane can deliver it in time. Clear 446kg locally at Rs9.11/kg (59% off base Rs22.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0007",
+            "commodity_name": "Spinach",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 296.6,
+            "expected_recovered_value": 2702.03,
+            "reason": "Spinach batch B0007 has 0.9d shelf life; no full-price lane can deliver it in time. Clear 297kg locally at Rs9.11/kg (59% off base Rs22.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0008",
+            "commodity_name": "Spinach",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 159.2,
+            "expected_recovered_value": 1450.31,
+            "reason": "Spinach batch B0008 has 1.7d shelf life; no full-price lane can deliver it in time. Clear 159kg locally at Rs9.11/kg (59% off base Rs22.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0009",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 1038.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0009 will expire in 0.5d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0010",
+            "commodity_name": "Strawberry",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 1087.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0010 is at risk (2.7d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0011",
+            "commodity_name": "Strawberry",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 153.6,
+            "expected_recovered_value": 11446.27,
+            "reason": "Strawberry batch B0011 has 1.8d shelf life; no full-price lane can deliver it in time. Clear 154kg locally at Rs74.52/kg (59% off base Rs180.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0012",
+            "commodity_name": "Strawberry",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 366.2,
+            "expected_recovered_value": 27289.22,
+            "reason": "Strawberry batch B0012 has 0.6d shelf life; no full-price lane can deliver it in time. Clear 366kg locally at Rs74.52/kg (59% off base Rs180.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0019",
+            "commodity_name": "Banana",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 185.8,
+            "expected_recovered_value": 0.0,
+            "reason": "Banana batch B0019 is at risk (2.9d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0023",
+            "commodity_name": "Onion",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 974.2,
+            "expected_recovered_value": 7257.79,
+            "reason": "Onion batch B0023 has 13.9d shelf life; no full-price lane can deliver it in time. Clear 974kg locally at Rs7.45/kg (59% off base Rs18.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0034",
+            "commodity_name": "Cauliflower",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 460.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0034 is at risk (2.5d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0035",
+            "commodity_name": "Cauliflower",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 514.0,
+            "expected_recovered_value": 6383.88,
+            "reason": "Cauliflower batch B0035 has 1.6d shelf life; no full-price lane can deliver it in time. Clear 514kg locally at Rs12.42/kg (59% off base Rs30.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0036",
+            "commodity_name": "Cauliflower",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 520.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0036 is at risk (1.8d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0037",
+            "commodity_name": "Cauliflower",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 130.4,
+            "expected_recovered_value": 1619.57,
+            "reason": "Cauliflower batch B0037 has 3.6d shelf life; no full-price lane can deliver it in time. Clear 130kg locally at Rs12.42/kg (59% off base Rs30.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0038",
+            "commodity_name": "Cauliflower",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 431.0,
+            "expected_recovered_value": 5353.02,
+            "reason": "Cauliflower batch B0038 has 4.5d shelf life; no full-price lane can deliver it in time. Clear 431kg locally at Rs12.42/kg (59% off base Rs30.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0039",
+            "commodity_name": "Grapes",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 233.9,
+            "expected_recovered_value": 0.0,
+            "reason": "Grapes batch B0039 is at risk (2.1d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0040",
+            "commodity_name": "Grapes",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 387.9,
+            "expected_recovered_value": 14453.15,
+            "reason": "Grapes batch B0040 has 1.4d shelf life; no full-price lane can deliver it in time. Clear 388kg locally at Rs37.26/kg (59% off base Rs90.00) to recover value instead of spoiling."
+          },
+          {
+            "batch_id": "B0041",
+            "commodity_name": "Grapes",
+            "rule_id": "clearance_recovery",
+            "discount_pct": 0.586,
+            "quantity_kg": 781.8,
+            "expected_recovered_value": 29129.87,
+            "reason": "Grapes batch B0041 has 1.6d shelf life; no full-price lane can deliver it in time. Clear 782kg locally at Rs37.26/kg (59% off base Rs90.00) to recover value instead of spoiling."
+          }
+        ]
+      }
+    }
+  ]
+}

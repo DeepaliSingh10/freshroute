@@ -30,7 +30,7 @@ def solve_baseline(instance: Instance, cost_model: CostModel, strategy: str = "f
 
 
 def _solve_feasible_greedy(instance: Instance, cost_model: CostModel, strategy: str) -> Plan:
-    pairs = build_feasible_pairs(instance, cost_model)
+    pairs = build_feasible_pairs(instance, cost_model, include_clearance=False)
 
     remaining_demand: Dict[Tuple[str, str], float] = {
         (d.destination_id, d.commodity_id): d.demand_kg for d in instance.demands
@@ -106,6 +106,8 @@ def _solve_shelf_life_blind(instance: Instance, cost_model: CostModel) -> Plan:
     for b in instance.batches.values():
         candidates = []
         for d in instance.destinations.values():
+            if d.is_clearance:
+                continue
             lane = instance.lanes.get((b.origin_id, d.destination_id))
             if lane is None:
                 continue

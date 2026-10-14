@@ -15,9 +15,10 @@ spoilage_cost_fraction:
   root: 0.6
   tuber: 0.6
 
-# Soft penalty used ONLY inside the optimizer objective to encourage fulfillment.
-# Excluded from reported net_revenue (see docs/EVALUATION.md).
-unmet_demand_penalty_per_kg: 2.0
+# Soft penalty used ONLY inside the optimizer objective to encourage market-demand
+# fulfillment. Excluded from reported net_revenue (see docs/EVALUATION.md).
+# NOT applied to the clearance channel (an optional salvage sink, not real demand).
+unmet_demand_penalty_per_kg: 10.0
 
 # Rule-based discount ladder (used from Phase 2 onward).
 discount_ladder:
@@ -28,3 +29,14 @@ discount_ladder:
 
 # Time assumed for handling/inspection at the destination, in days.
 shelf_life_buffer_days: 0.25
+
+# Local clearance channel (FreshRoute capability — the baseline does NOT use it).
+# At-risk / stranded stock can be cleared near the origin at a discount instead of spoiling.
+clearance:
+  price_fraction: 0.45          # clearance price = base_price * this
+  demand_fraction: 0.35         # max clearance demand per (origin, commodity) = supply * this
+  travel_hours: 0.75
+  transport_cost_per_kg: 0.5
+  lane_capacity_kg: 1000000
+  min_days_fresh: 0.0
+

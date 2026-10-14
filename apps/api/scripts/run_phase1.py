@@ -20,6 +20,7 @@ from app.data.cost_model import CostModel  # noqa: E402
 from app.data.generator import generate_instance, apply_perturbations, write_instance_csv  # noqa: E402
 from app.optimizer.allocator import solve_optimizer  # noqa: E402
 from app.optimizer.baseline import solve_baseline  # noqa: E402
+from app.optimizer.discounts import recommend_discounts  # noqa: E402
 from app.eval.metrics import compute_metrics, compare  # noqa: E402
 from app.eval.checker import check_plan  # noqa: E402
 
@@ -51,12 +52,15 @@ SCENARIOS = [
 ]
 
 
-def run_scenario(spec: dict, cost_model: CostModel, write_csv: bool, out_dir: Path) -> dict:
+def run_scenario(
+    spec: dict, cost_model: CostModel, write_csv: bool, out_dir: Path, with_clearance: bool = True
+) -> dict:
     base = generate_instance(
         seed=spec["seed"],
         cost_model=cost_model,
         scenario_id=spec["id"],
         split=spec["split"],
+        with_clearance=with_clearance,
     )
     instance = apply_perturbations(base, spec.get("perturb"), seed=spec["seed"] + 1)
 
@@ -75,6 +79,8 @@ def run_scenario(spec: dict, cost_model: CostModel, write_csv: bool, out_dir: Pa
     m_base.violations = len(check_plan(instance, cost_model, plan_base))
     m_opt.violations = len(check_plan(instance, cost_model, plan_opt))
 
+    discounts = recommend_discounts(instance, cost_model, plan_opt)
+
     delta = compare(m_opt, m_base)
     delta_naive = compare(m_opt, m_naive)
 
@@ -85,6 +91,7 @@ def run_scenario(spec: dict, cost_model: CostModel, write_csv: bool, out_dir: Pa
         "opt": m_opt,
         "delta": delta,
         "delta_naive": delta_naive,
+        "discounts": discounts,
     }
 
 
@@ -96,7 +103,7 @@ def _feasibility_coverage(instance, cost_model) -> tuple:
     """How many batches can reach at least one destination; structural spoilage floor."""
     from app.optimizer.feasibility import build_feasible_pairs
 
-    pairs = build_feasible_pairs(instance, cost_model)
+    pairs = build_feasible_pairs(instance, cost_model, include_clearance=False)
     reachable = {bid for (bid, _) in pairs}
     total = len(instance.batches)
     stranded_kg = sum(
@@ -120,6 +127,7 @@ def _print_scenario(result: dict, cost_model: CostModel) -> None:
         ("Spoilage (kg)", b.spoilage_kg, nv.spoilage_kg, o.spoilage_kg),
         ("Spoilage (%)", b.spoilage_pct * 100, nv.spoilage_pct * 100, o.spoilage_pct * 100),
         ("Expired (kg)", b.expired_kg, nv.expired_kg, o.expired_kg),
+        ("Clearance (kg)", b.clearance_kg, nv.clearance_kg, o.clearance_kg),
         ("Fulfillment (%)", b.fulfillment_pct * 100, nv.fulfillment_pct * 100, o.fulfillment_pct * 100),
         ("Net revenue", b.net_revenue, nv.net_revenue, o.net_revenue),
         ("Transport cost", b.transport_cost, nv.transport_cost, o.transport_cost),
@@ -140,6 +148,17 @@ def _print_scenario(result: dict, cost_model: CostModel) -> None:
         f"net rev {_fmt(dn['net_revenue_delta'])} ({dn['net_revenue_delta_pct'] * 100:+.1f}%)"
     )
 
+    disc = result["discounts"]
+    recovered = sum(x.expected_recovered_value for x in disc)
+    cleared = [x for x in disc if x.rule_id == "clearance_recovery"]
+    print(
+        f"  discounts: {len(disc)} recommendations  "
+        f"(clearance_recovery={len(cleared)}, recovered=Rs{_fmt(recovered)})"
+    )
+    for x in disc[:2]:
+        print(f"    - [{x.rule_id}] {x.reason}")
+
+
 
 
 def main() -> int:
@@ -152,19 +171,30 @@ def main() -> int:
     )
     parser.add_argument("--write-results", action="store_true", help="write results JSON")
     parser.add_argument(
+        "--no-clearance",
+        action="store_true",
+        help="disable the local clearance channel (reproduces the Phase 1 artifact)",
+    )
+    parser.add_argument(
         "--results",
-        default=str(Path(__file__).resolve().parents[3] / "results" / "phase1_summary.json"),
-        help="results JSON path",
+        default=None,
+        help="results JSON path (default: results/phase{1,2}_summary.json)",
     )
     args = parser.parse_args()
 
+    with_clearance = not args.no_clearance
+    phase = "owner_A_phase2" if with_clearance else "owner_A_phase1"
+    if args.results is None:
+        fname = "phase2_summary.json" if with_clearance else "phase1_summary.json"
+        args.results = str(Path(__file__).resolve().parents[3] / "results" / fname)
+
     cost_model = CostModel.load()
-    print(f"FreshRoute Owner A — Phase 1  | cost_model hash={cost_model.config_hash()}")
+    print(f"FreshRoute Owner A — {phase}  | cost_model hash={cost_model.config_hash()}")
     out_dir = Path(args.out)
 
     results = []
     for spec in SCENARIOS:
-        res = run_scenario(spec, cost_model, args.write_csv, out_dir)
+        res = run_scenario(spec, cost_model, args.write_csv, out_dir, with_clearance)
         _print_scenario(res, cost_model)
         results.append(res)
 
@@ -185,6 +215,7 @@ def main() -> int:
 
     if args.write_results:
         import json
+        from dataclasses import asdict
 
         def _clean(metrics) -> dict:
             d = metrics.to_dict()
@@ -192,7 +223,7 @@ def main() -> int:
             return d
 
         payload = {
-            "phase": "owner_A_phase1",
+            "phase": phase,
             "cost_model_hash": cost_model.config_hash(),
             "scenarios": [
                 {
@@ -204,6 +235,16 @@ def main() -> int:
                     "optimized": _clean(r["opt"]),
                     "delta_vs_fefo": r["delta"],
                     "delta_vs_naive": r["delta_naive"],
+                    "discounts": {
+                        "count": len(r["discounts"]),
+                        "clearance_recovery": sum(
+                            1 for x in r["discounts"] if x.rule_id == "clearance_recovery"
+                        ),
+                        "expected_recovered_value": round(
+                            sum(x.expected_recovered_value for x in r["discounts"]), 2
+                        ),
+                        "recommendations": [asdict(x) for x in r["discounts"]],
+                    },
                 }
                 for r in results
             ],

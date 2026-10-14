@@ -32,11 +32,50 @@
   time). The spoilage lever is **clearing at-risk/stranded stock via discounts** (MVP M4) plus
   price-elastic demand — implemented in Phase 2.
 
-## Owner A — Phase 2 (next)
-- [ ] Discount engine (M4) + at-risk clearance outlet → attack the stranded-stock spoilage.
+## Owner A — Phase 2 (in progress)
+
+### Phase 2 · Part 1 — Local clearance channel + discount engine (M4) ✅ (done)
+The Phase 1 spoilage gain vs the strong FEFO baseline was near-parity because a large share of
+spoilage is **structurally stranded** stock (no full-price destination is reachable before
+expiry). Phase 2 part 1 adds a **local clearance channel** the baseline does NOT have, plus a
+rule-based **discount recommendation engine**.
+
+**What changed**
+- `app/data/generator.py` — `_build_clearance_outlets()` creates one clearance destination +
+  lane + commodity demand per origin (`CLR-<origin>`), sized from local supply.
+  `generate_instance(..., with_clearance=True)`.
+- `app/data/models.py` — `Destination.is_clearance: bool`.
+- `app/data/cost_model.yaml`/`.py` — `clearance:` block + typed helpers.
+- `app/optimizer/feasibility.py` — `build_feasible_pairs(..., include_clearance=True)`.
+- `app/optimizer/baseline.py` — baselines run with `include_clearance=False` (no recovery
+  capability); the `naive` shelf-life-blind strategy also skips clearance outlets.
+- `app/optimizer/allocator.py` — clearance is an **optional salvage sink** (upper bound, not
+  penalized unmet demand), so recovery never comes at the cost of market fulfillment.
+- `app/optimizer/discounts.py` — NEW rule-based engine (`clearance_recovery`,
+  `spoil_no_buyer`, `at_risk_monitor`) with a human-readable reason per recommendation.
+- `app/eval/metrics.py` — clearance excluded from the demand/fulfillment denominator; adds
+  `clearance_kg`, `clearance_revenue`; salvage revenue flows into net revenue.
+- `scripts/run_phase1.py` — `--no-clearance` reproduces the Phase 1 artifact; default now writes
+  `results/phase2_summary.json` and embeds discount recommendations.
+
+**Verified**
+- Solver OPTIMAL, runtime ~1–3 ms; **0 hard-constraint violations**; deterministic (identical
+  JSON across runs, timing stripped).
+- Phase 1 still reproduces exactly via `--no-clearance` (mean spoilage +0.9%, net +16,912 vs FEFO).
+
+**Results (mean over train/test/hidden, with clearance)**
+| Comparison | Spoilage | Fulfillment | Net revenue |
+|------------|----------|-------------|-------------|
+| vs `fefo` (strong) | **−65.8%** | +0.29 pts | **+311,076 (+~92%)** |
+| vs `naive` (shelf-life-blind) | **−74.9%** | **+~10 pts** | large gain |
+
+Per scenario, spoilage falls **58.8%–76.3%** vs FEFO while fulfillment stays on par
+(+0.0 to +0.9 pts) — recovery is added value, not a trade against service.
+
+### Phase 2 — remaining
 - [ ] Demand forecasting (E1) feeding the allocator.
 - [ ] Uncertainty ranges + Monte Carlo robustness (E4).
 - [ ] Replan path on disruption (E3).
 
 ## Owner B / C
-Not started in this repo yet (Phase 1 was Owner A only).
+Not started in this repo yet (Owner A phases only).

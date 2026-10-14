@@ -27,13 +27,15 @@ computed, and the tactic to maximize it. Every number must be reproducible from 
 **How we win:**
 - Perishability-first prioritization removes near-expiry stock before it dies.
 - Explicit shelf-life feasibility stops us shipping produce that would expire in transit.
-- Discount engine recovers value on would-be-spoiled batches instead of letting them rot.
+- Discount engine recovers value on would-be-spoiled batches via the local clearance channel
+  instead of letting them rot.
 - Report an absolute number: *"X% less spoiled inventory than baseline on hidden scenarios."*
 
 ## 2. Demand fulfillment (15)
 
 **Metric:** `fulfilled_kg / total_demand_kg`; also per-commodity and per-destination balance,
-and `unmet_kg`.
+and `unmet_kg`. **Clearance demand is excluded** from the denominator (it is an optional salvage
+sink, not market demand), so the metric measures real service level.
 
 **How we win:**
 - Optimizer maximizes served demand subject to feasibility (penalized unmet demand).
@@ -45,13 +47,15 @@ and `unmet_kg`.
 
 **Metric (one shared cost model — see `DATA_SPEC.md` §2):**
 ```
-revenue          = Σ x[b,d] · price[c,d] · (1 − disc[b])
+revenue          = Σ x[b,d] · price[c,d] · grade_factor(b)         # includes clearance salvage
 transport_cost   = Σ x[b,d] · cost_per_kg(lane)
 handling_cost    = Σ x[b,d] · handling_per_kg(c)
 spoilage_cost    = Σ leftover[b] · cost_basis_per_kg(c) · spoilage_fraction(c)
-discount_effect  = Σ (forgone margin from discounts)     # already inside revenue term if modeled as price cut
 net_revenue      = revenue − transport_cost − handling_cost − spoilage_cost
 ```
+where clearance sales (`Destination.is_clearance`) contribute to `revenue` at
+`base_price × clearance.price_fraction`. The internal `unmet_demand_penalty_per_kg` is **not**
+a real cost and is excluded from reported `net_revenue`.
 **How we win:** the LP directly maximizes this. Report `Δnet_revenue` vs baseline in absolute
 currency **and** %. Break the delta into its drivers (less spoilage, better allocation, fewer
 wasted trips) so judges see *why*.

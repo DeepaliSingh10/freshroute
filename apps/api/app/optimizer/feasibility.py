@@ -43,15 +43,21 @@ def is_feasible(
 
 
 def build_feasible_pairs(
-    instance: Instance, cost_model: CostModel
+    instance: Instance, cost_model: CostModel, include_clearance: bool = True
 ) -> Dict[Tuple[str, str], FeasiblePair]:
-    """Return feasible (batch_id, destination_id) -> FeasiblePair."""
+    """Return feasible (batch_id, destination_id) -> FeasiblePair.
+
+    When include_clearance is False, the local clearance channel is excluded — used by
+    baselines, which represent a distributor without FreshRoute's recovery capability.
+    """
     demand = instance.demand_lookup()
     pairs: Dict[Tuple[str, str], FeasiblePair] = {}
 
     for b in instance.batches.values():
         commodity = instance.commodities[b.commodity_id]
         for d in instance.destinations.values():
+            if d.is_clearance and not include_clearance:
+                continue
             dem = demand.get((d.destination_id, b.commodity_id))
             if dem is None or dem.demand_kg <= 0:
                 continue

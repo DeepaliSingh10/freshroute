@@ -1,6 +1,6 @@
 {
   "phase": "owner_A_phase1",
-  "cost_model_hash": "83e653f7f8a5",
+  "cost_model_hash": "04778f090439",
   "scenarios": [
     {
       "scenario_id": "train_01",
@@ -12,6 +12,8 @@
         "spoilage_kg": 7550.6,
         "spoilage_pct": 0.3037,
         "expired_kg": 0.0,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
         "fulfilled_kg": 16666.5,
         "demand_kg": 23360.4,
         "unmet_kg": 6693.9,
@@ -29,6 +31,8 @@
         "spoilage_kg": 9498.26,
         "spoilage_pct": 0.382,
         "expired_kg": 4229.4,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
         "fulfilled_kg": 14679.1,
         "demand_kg": 23360.4,
         "unmet_kg": 8681.3,
@@ -46,6 +50,8 @@
         "spoilage_kg": 7344.2,
         "spoilage_pct": 0.2954,
         "expired_kg": 0.0,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
         "fulfilled_kg": 16872.9,
         "demand_kg": 23360.4,
         "unmet_kg": 6487.5,
@@ -70,6 +76,202 @@
         "net_revenue_delta": 270812.99,
         "net_revenue_delta_pct": 9.6633,
         "violations_total": 0
+      },
+      "discounts": {
+        "count": 21,
+        "clearance_recovery": 0,
+        "expected_recovered_value": 0.0,
+        "recommendations": [
+          {
+            "batch_id": "B0000",
+            "commodity_name": "Tomato",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 179.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0000 will expire in 1.1d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0001",
+            "commodity_name": "Tomato",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 228.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0001 will expire in 1.0d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0003",
+            "commodity_name": "Tomato",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 323.3,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0003 is at risk (2.6d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0006",
+            "commodity_name": "Tomato",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 74.1,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0006 is at risk (2.3d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0007",
+            "commodity_name": "Spinach",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 418.0,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0007 is at risk (1.8d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0008",
+            "commodity_name": "Spinach",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 50.0,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0008 will expire in 0.7d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0009",
+            "commodity_name": "Spinach",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 1632.2,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0009 will expire in 1.3d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0010",
+            "commodity_name": "Spinach",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 359.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0010 will expire in 1.9d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0011",
+            "commodity_name": "Spinach",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 443.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0011 will expire in 0.8d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0012",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 73.0,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0012 will expire in 2.6d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0013",
+            "commodity_name": "Strawberry",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 318.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0013 is at risk (2.6d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0014",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 629.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0014 will expire in 0.8d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0015",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 306.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0015 will expire in 1.9d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0016",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 905.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0016 will expire in 2.1d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0017",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 290.6,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0017 will expire in 0.8d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0018",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 125.0,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0018 will expire in 1.8d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0028",
+            "commodity_name": "Banana",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 161.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Banana batch B0028 is at risk (2.5d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0042",
+            "commodity_name": "Cauliflower",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 139.1,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0042 is at risk (2.0d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0044",
+            "commodity_name": "Cauliflower",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 512.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0044 is at risk (2.6d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0050",
+            "commodity_name": "Grapes",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 288.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Grapes batch B0050 will expire in 1.6d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0054",
+            "commodity_name": "Okra",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 104.8,
+            "expected_recovered_value": 0.0,
+            "reason": "Okra batch B0054 will expire in 1.5d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          }
+        ]
       }
     },
     {
@@ -82,6 +284,8 @@
         "spoilage_kg": 6652.79,
         "spoilage_pct": 0.2178,
         "expired_kg": 0.0,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
         "fulfilled_kg": 22837.4,
         "demand_kg": 31167.6,
         "unmet_kg": 8330.2,
@@ -99,6 +303,8 @@
         "spoilage_kg": 9854.46,
         "spoilage_pct": 0.3226,
         "expired_kg": 3506.5,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
         "fulfilled_kg": 19597.7,
         "demand_kg": 31167.6,
         "unmet_kg": 11569.9,
@@ -116,6 +322,8 @@
         "spoilage_kg": 6652.79,
         "spoilage_pct": 0.2178,
         "expired_kg": 0.0,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
         "fulfilled_kg": 22837.4,
         "demand_kg": 31167.6,
         "unmet_kg": 8330.2,
@@ -140,6 +348,148 @@
         "net_revenue_delta": 462757.92,
         "net_revenue_delta_pct": 2.7336,
         "violations_total": 0
+      },
+      "discounts": {
+        "count": 15,
+        "clearance_recovery": 0,
+        "expected_recovered_value": 0.0,
+        "recommendations": [
+          {
+            "batch_id": "B0000",
+            "commodity_name": "Tomato",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 824.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0000 is at risk (2.4d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0004",
+            "commodity_name": "Tomato",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 324.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0004 is at risk (2.8d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0005",
+            "commodity_name": "Spinach",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 50.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0005 will expire in 2.0d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0006",
+            "commodity_name": "Spinach",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 209.8,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0006 will expire in 1.6d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0007",
+            "commodity_name": "Spinach",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 186.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0007 is at risk (2.2d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0008",
+            "commodity_name": "Spinach",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 431.2,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0008 is at risk (2.8d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0009",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 858.3,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0009 will expire in 0.9d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0010",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 135.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0010 will expire in 2.2d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0011",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 130.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0011 will expire in 2.1d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0038",
+            "commodity_name": "Cauliflower",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 205.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0038 will expire in 1.9d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0040",
+            "commodity_name": "Cauliflower",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 174.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0040 will expire in 2.2d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0043",
+            "commodity_name": "Cauliflower",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 569.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0043 will expire in 1.2d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0046",
+            "commodity_name": "Grapes",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 183.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Grapes batch B0046 is at risk (2.3d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0054",
+            "commodity_name": "Okra",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 671.3,
+            "expected_recovered_value": 0.0,
+            "reason": "Okra batch B0054 will expire in 1.9d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0055",
+            "commodity_name": "Okra",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 2937.2,
+            "expected_recovered_value": 0.0,
+            "reason": "Okra batch B0055 will expire in 1.0d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          }
+        ]
       }
     },
     {
@@ -152,6 +502,8 @@
         "spoilage_kg": 7573.14,
         "spoilage_pct": 0.2987,
         "expired_kg": 0.0,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
         "fulfilled_kg": 17376.3,
         "demand_kg": 29095.1,
         "unmet_kg": 11718.8,
@@ -169,6 +521,8 @@
         "spoilage_kg": 10671.78,
         "spoilage_pct": 0.421,
         "expired_kg": 6268.4,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
         "fulfilled_kg": 14239.3,
         "demand_kg": 29095.1,
         "unmet_kg": 14855.8,
@@ -186,6 +540,8 @@
         "spoilage_kg": 7573.14,
         "spoilage_pct": 0.2987,
         "expired_kg": 0.0,
+        "clearance_kg": 0.0,
+        "clearance_revenue": 0.0,
         "fulfilled_kg": 17376.3,
         "demand_kg": 29095.1,
         "unmet_kg": 11718.8,
@@ -210,6 +566,166 @@
         "net_revenue_delta": 538874.29,
         "net_revenue_delta_pct": -2.322,
         "violations_total": 0
+      },
+      "discounts": {
+        "count": 17,
+        "clearance_recovery": 0,
+        "expected_recovered_value": 0.0,
+        "recommendations": [
+          {
+            "batch_id": "B0001",
+            "commodity_name": "Tomato",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 117.8,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0001 will expire in 1.4d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0004",
+            "commodity_name": "Tomato",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 797.6,
+            "expected_recovered_value": 0.0,
+            "reason": "Tomato batch B0004 is at risk (2.9d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0005",
+            "commodity_name": "Spinach",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 504.3,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0005 will expire in 0.7d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0006",
+            "commodity_name": "Spinach",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 909.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0006 will expire in 0.9d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0007",
+            "commodity_name": "Spinach",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 296.6,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0007 will expire in 0.9d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0008",
+            "commodity_name": "Spinach",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 324.9,
+            "expected_recovered_value": 0.0,
+            "reason": "Spinach batch B0008 will expire in 1.7d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0009",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 1038.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0009 will expire in 0.5d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0010",
+            "commodity_name": "Strawberry",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 1087.7,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0010 is at risk (2.7d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0011",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 153.6,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0011 will expire in 1.8d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0012",
+            "commodity_name": "Strawberry",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 747.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Strawberry batch B0012 will expire in 0.6d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0019",
+            "commodity_name": "Banana",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 185.8,
+            "expected_recovered_value": 0.0,
+            "reason": "Banana batch B0019 is at risk (2.9d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0034",
+            "commodity_name": "Cauliflower",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 460.4,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0034 is at risk (2.5d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0035",
+            "commodity_name": "Cauliflower",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 514.0,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0035 will expire in 1.6d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0036",
+            "commodity_name": "Cauliflower",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 520.5,
+            "expected_recovered_value": 0.0,
+            "reason": "Cauliflower batch B0036 is at risk (1.8d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0039",
+            "commodity_name": "Grapes",
+            "rule_id": "at_risk_monitor",
+            "discount_pct": 0.15,
+            "quantity_kg": 233.9,
+            "expected_recovered_value": 0.0,
+            "reason": "Grapes batch B0039 is at risk (2.1d left) but was placed at full price; monitor and hold 15% discount ready."
+          },
+          {
+            "batch_id": "B0040",
+            "commodity_name": "Grapes",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 557.8,
+            "expected_recovered_value": 0.0,
+            "reason": "Grapes batch B0040 will expire in 1.4d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          },
+          {
+            "batch_id": "B0041",
+            "commodity_name": "Grapes",
+            "rule_id": "spoil_no_buyer",
+            "discount_pct": 0.3,
+            "quantity_kg": 1274.3,
+            "expected_recovered_value": 0.0,
+            "reason": "Grapes batch B0041 will expire in 1.6d with no feasible buyer (regular or clearance). Recommend pre-emptive 30% discount / donation drive; no recoverable value modeled."
+          }
+        ]
       }
     }
   ]

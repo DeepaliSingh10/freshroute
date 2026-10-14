@@ -38,6 +38,7 @@ class Destination:
     delivery_window_end: str
     size_factor: float
     price_factor: float
+    is_clearance: bool = False
 
 
 @dataclass(frozen=True)

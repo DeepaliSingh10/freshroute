@@ -19,6 +19,7 @@ class CostModel:
     unmet_demand_penalty_per_kg: float
     discount_ladder: dict
     shelf_life_buffer_days: float
+    clearance: dict
     raw: dict
 
     @classmethod
@@ -33,11 +34,37 @@ class CostModel:
             unmet_demand_penalty_per_kg=float(data["unmet_demand_penalty_per_kg"]),
             discount_ladder=data.get("discount_ladder", {}),
             shelf_life_buffer_days=float(data["shelf_life_buffer_days"]),
+            clearance=data.get("clearance", {}),
             raw=data,
         )
 
     def spoilage_fraction(self, perishability_class: str) -> float:
         return float(self.spoilage_cost_fraction.get(perishability_class, 1.0))
+
+    # --- clearance channel helpers ---
+    @property
+    def clearance_price_fraction(self) -> float:
+        return float(self.clearance.get("price_fraction", 0.45))
+
+    @property
+    def clearance_demand_fraction(self) -> float:
+        return float(self.clearance.get("demand_fraction", 0.35))
+
+    @property
+    def clearance_travel_hours(self) -> float:
+        return float(self.clearance.get("travel_hours", 0.75))
+
+    @property
+    def clearance_transport_cost_per_kg(self) -> float:
+        return float(self.clearance.get("transport_cost_per_kg", 0.5))
+
+    @property
+    def clearance_lane_capacity_kg(self) -> float:
+        return float(self.clearance.get("lane_capacity_kg", 1_000_000))
+
+    @property
+    def clearance_min_days_fresh(self) -> float:
+        return float(self.clearance.get("min_days_fresh", 0.0))
 
     def config_hash(self) -> str:
         import hashlib

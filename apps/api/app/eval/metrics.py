@@ -3,9 +3,12 @@
 Reported net_revenue EXCLUDES the optimizer's internal unmet-demand penalty
 (that penalty only steers the objective; it is not a real economic cost).
 
-Shelf-life-blind plans may dispatch cargo that cannot arrive before expiry. Such
-shipments earn ZERO revenue, still cost transport + handling, and the produce spoils
-on arrival — surfaced here as `expired_kg` (MVP item M3).
+Two special quantities:
+  - `expired_kg`: shelf-life-blind cargo that arrives after expiry (zero revenue,
+    transport/handling still paid) — the naive-baseline failure mode (MVP M3).
+  - `clearance_kg` / `clearance_revenue`: at-risk stock recovered through the local
+    clearance channel (MVP M4). Clearance is a salvage channel, NOT market demand, so it
+    is excluded from the demand/fulfillment denominator.
 """
 
 from __future__ import annotations
@@ -27,6 +30,8 @@ class Metrics:
     spoilage_kg: float
     spoilage_pct: float
     expired_kg: float
+    clearance_kg: float
+    clearance_revenue: float
     fulfilled_kg: float
     demand_kg: float
     unmet_kg: float
@@ -52,6 +57,8 @@ def compute_metrics(instance: Instance, cost_model: CostModel, plan: Plan) -> Me
     handling = 0.0
     fulfilled = 0.0
     expired = 0.0
+    clearance_kg = 0.0
+    clearance_revenue = 0.0
 
     for disp in plan.dispatches:
         b = instance.batches[disp.batch_id]
@@ -59,23 +66,26 @@ def compute_metrics(instance: Instance, cost_model: CostModel, plan: Plan) -> Me
         dem = demand.get((disp.destination_id, b.commodity_id))
         if dem is None:
             continue
-        lane = instance.lane(b.origin_id, disp.destination_id)
         d = instance.destinations[disp.destination_id]
+        lane = instance.lane(b.origin_id, disp.destination_id)
+        eff_price = dem.price_per_kg * GRADE_PRICE_FACTOR.get(b.quality_grade, 1.0)
 
         transport += disp.quantity_kg * lane.cost_per_kg
         handling += disp.quantity_kg * commodity.handling_per_kg
 
-        if is_feasible(
+        if d.is_clearance:
+            clearance_kg += disp.quantity_kg
+            clearance_revenue += disp.quantity_kg * eff_price
+            revenue += disp.quantity_kg * eff_price
+        elif is_feasible(
             b.remaining_shelf_life_days,
             lane.travel_time_hours,
             d.min_days_fresh_on_shelf,
             cost_model,
         ):
-            eff_price = dem.price_per_kg * GRADE_PRICE_FACTOR.get(b.quality_grade, 1.0)
             revenue += disp.quantity_kg * eff_price
             fulfilled += disp.quantity_kg
         else:
-            # Arrives expired: no revenue, paid transport + handling.
             expired += disp.quantity_kg
 
     # Leftover per batch (stock minus everything dispatched).
@@ -89,10 +99,12 @@ def compute_metrics(instance: Instance, cost_model: CostModel, plan: Plan) -> Me
     spoilage_kg = 0.0
     spoilage_cost = 0.0
 
-    # Spoiled-at-destination (expired on arrival).
+    # Expired on arrival (non-clearance infeasible shipments).
     for disp in plan.dispatches:
         b = instance.batches[disp.batch_id]
         d = instance.destinations[disp.destination_id]
+        if d.is_clearance:
+            continue
         lane = instance.lane(b.origin_id, disp.destination_id)
         commodity = instance.commodities[b.commodity_id]
         if not is_feasible(
@@ -113,7 +125,12 @@ def compute_metrics(instance: Instance, cost_model: CostModel, plan: Plan) -> Me
         spoilage_kg += qty * frac
         spoilage_cost += qty * commodity.cost_basis_per_kg * frac
 
-    demand_kg = sum(d.demand_kg for d in instance.demands)
+    # Demand denominator excludes clearance (it is salvage, not market demand).
+    demand_kg = sum(
+        d.demand_kg
+        for d in instance.demands
+        if not instance.destinations[d.destination_id].is_clearance
+    )
     unmet = max(0.0, demand_kg - fulfilled)
 
     return Metrics(
@@ -122,6 +139,8 @@ def compute_metrics(instance: Instance, cost_model: CostModel, plan: Plan) -> Me
         spoilage_kg=round(spoilage_kg, 2),
         spoilage_pct=round((spoilage_kg / total_inventory) if total_inventory else 0.0, 4),
         expired_kg=round(expired, 2),
+        clearance_kg=round(clearance_kg, 2),
+        clearance_revenue=round(clearance_revenue, 2),
         fulfilled_kg=round(fulfilled, 2),
         demand_kg=round(demand_kg, 2),
         unmet_kg=round(unmet, 2),

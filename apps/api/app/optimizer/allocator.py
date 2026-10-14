@@ -3,18 +3,19 @@
 Decision variables
     x[b,d]   >= 0   kg of batch b shipped to destination d   (feasible pairs only)
     left[b]  >= 0   kg of batch b not dispatched (may spoil)
-    unmet[d,c]>=0   kg of demand at destination d for commodity c not served
+    unmet[d,c]>=0   kg of MARKET demand at destination d for commodity c not served
 
 Objective (maximize)
     sum x * effective_price
   - sum x * transport_cost
   - sum x * handling_cost
   - sum left * spoilage_cost_per_kg
-  - sum unmet * unmet_penalty
+  - sum unmet * unmet_penalty            (market demand only; clearance not penalized)
 
 Hard constraints
     (1) stock     : sum_d x[b,d] + left[b] = qty[b]
-    (2) demand    : sum_b x[b,d] + unmet[d,c] = demand[d,c]
+    (2) demand    : sum_b x[b,d] + unmet[d,c] = demand[d,c]      (market demand)
+                    sum_b x[b,d] <= demand[d,c]                  (clearance sink, optional)
     (3) lane cap  : sum_b x[b,d] <= lane.capacity_kg          (grouped by origin->dest)
     (4) shelf life: enforced by only creating feasible pairs (see feasibility.py)
 """
@@ -53,8 +54,13 @@ def solve_optimizer(
         for b in instance.batches.values()
     }
 
+    # Market demand is penalized when unmet; the clearance channel is an OPTIONAL
+    # salvage sink (upper bound only, never penalized) — you don't "fail" demand by
+    # not using a clearance outlet.
     unmet: Dict[Tuple[str, str], object] = {}
     for dem in instance.demands:
+        if instance.destinations[dem.destination_id].is_clearance:
+            continue
         k = (dem.destination_id, dem.commodity_id)
         unmet[k] = solver.NumVar(0.0, max(0.0, dem.demand_kg), f"unmet_{k[0]}_{k[1]}")
 
@@ -70,11 +76,16 @@ def solve_optimizer(
     # (2) demand balance per (destination, commodity)
     for dem in instance.demands:
         k = (dem.destination_id, dem.commodity_id)
-        ct = solver.Constraint(dem.demand_kg, dem.demand_kg, f"demand_{k[0]}_{k[1]}")
+        is_clr = instance.destinations[dem.destination_id].is_clearance
+        if is_clr:
+            ct = solver.Constraint(-solver.infinity(), dem.demand_kg, f"clearance_{k[0]}_{k[1]}")
+        else:
+            ct = solver.Constraint(dem.demand_kg, dem.demand_kg, f"demand_{k[0]}_{k[1]}")
         for (bid, did), var in x.items():
             if did == dem.destination_id and pairs[(bid, did)].commodity_id == dem.commodity_id:
                 ct.SetCoefficient(var, 1.0)
-        ct.SetCoefficient(unmet[k], 1.0)
+        if not is_clr:
+            ct.SetCoefficient(unmet[k], 1.0)
 
     # (3) lane capacity per (origin, destination)
     for lane in instance.lanes.values():
