@@ -120,29 +120,36 @@ Every discount output includes: `batch_id`, `rule_id`, `discount_pct`, `expected
 
 ## 7. Replanning (E3)
 
-`POST /replan` accepts an event — `{type: traffic_delay|capacity_change|new_order|temp_spike,
-payload}` — and returns a **new plan + diff** (added/removed/changed dispatches) with a reason
-per change. Internally: mutate scenario, re-solve, emit `PlanDiff`.
+`POST /replan` accepts `{scenario_id, blocked_origins, travel_delay_hours}` and returns the
+**morning plan**, the frozen **"do nothing"** plan and the **replanned** result — each with full
+metrics — plus `recovery` deltas. Internally: `apply_disruption` mutates the network, then
+`replan` keeps only still-valid committed shipments and re-optimizes the residual stock (with
+reduced stock, demand and lane capacity) under the same hard constraints.
 
 ## 8. API surface
 
-| Endpoint | Method | Returns |
-|----------|--------|---------|
-| `/health` | GET | status, version, config hash |
-| `/scenarios` | GET | list of scenarios with `split` |
-| `/inventory` | GET | batches + commodities (M1) |
-| `/plan` | POST `{scenario_id}` | dispatch plan + discounts + reasons (M2, M3, M4) |
-| `/evaluate` | POST `{scenario_ids[]}` | proposed vs baseline metrics (M5) |
-| `/replan` | POST `{scenario_id, event}` | new plan + diff (E3) |
-| `/explain` | POST `{batch_id, destination_id}` | factor breakdown for one recommendation |
+| Endpoint | Method | Request | Returns |
+|----------|--------|---------|---------|
+| `/health` | GET | — | status, version, `cost_model_hash` |
+| `/scenarios` | GET | — | list of scenarios with `split` + seed |
+| `/inventory` | GET | `?scenario_id=` | batches + destinations (M1) |
+| `/plan` | POST | `{scenario_id, include_clearance}` | dispatch plan + discounts + reasons (M2, M3, M4) |
+| `/evaluate` | POST | `{scenario_id, baseline}` | optimizer vs baseline metrics + deltas (M5) |
+| `/replan` | POST | `{scenario_id, blocked_origins, travel_delay_hours}` | morning/no-replan/replan + recovery (E3) |
+| `/explain` | GET | `?scenario_id=` | plain-language reason per dispatch/discount |
+| `/sensitivity` | POST | `{scenario_id, factor?}` | one-factor net-revenue curves (E4) |
 
-All responses are deterministic given `scenario_id` (seeded). Contract types live in
-`apps/web/src/api/types.ts` and are the frozen interface between B and C.
+Unknown `scenario_id` → **404**. All responses are deterministic given `scenario_id` (seeded).
+The contract types live in `apps/api/app/api/schemas.py` (server) and
+`apps/web/src/api/types.ts` (client) — they are the frozen interface between B and C.
 
 ## 9. Reproducibility
 
-- Every run writes `results/<scenario>__<config_hash>.json` (metrics + plan + baseline).
-- `config_hash` = SHA256 of the cost model + solver config + seed.
+- Every run writes deterministic JSON artifacts under `results/` (phase summaries, forecast,
+  robustness, replan, discount policy, telemetry, sensitivity) plus `results/manifest.json`.
+- `manifest.json` records the `config_hash` (SHA256 of `cost_model.yaml`) and a SHA-256 per
+  artifact; `scripts/run_all.py` regenerates everything, `tests/test_reproducibility.py`
+  fails on any drift.
 - Tests assert: same seed+config ⇒ byte-identical results; 0 constraint violations.
 
 ## 10. Failure handling (rubric "Engineering")
