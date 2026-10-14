@@ -1,0 +1,77 @@
+{
+  "phase": "owner_A_phase2_e3_replan",
+  "cost_model_hash": "04778f090439",
+  "disruption": {
+    "blocked_origins": [
+      "ORG-IND"
+    ],
+    "travel_delay_hours": 6.0,
+    "description": "ORG-IND hub outbound lanes closed + 6.0h delay network-wide",
+    "hub_stock_kg": 7318.5
+  },
+  "morning_plan": {
+    "method": "lp_optimizer",
+    "status": "OPTIMAL",
+    "spoilage_kg": 3106.5,
+    "spoilage_pct": 0.1225,
+    "expired_kg": 0.0,
+    "clearance_kg": 5033.9,
+    "clearance_revenue": 159363.34,
+    "fulfilled_kg": 17210.5,
+    "demand_kg": 22547.5,
+    "unmet_kg": 5337.0,
+    "fulfillment_pct": 0.7633,
+    "revenue": 924282.62,
+    "transport_cost": 83889.05,
+    "handling_cost": 26693.28,
+    "spoilage_cost": 187188.0,
+    "net_revenue": 626512.29,
+    "violations": 0
+  },
+  "no_replan": {
+    "method": "no_replan",
+    "status": "FROZEN",
+    "spoilage_kg": 8549.0,
+    "spoilage_pct": 0.3372,
+    "expired_kg": 0.0,
+    "clearance_kg": 4468.8,
+    "clearance_revenue": 113590.24,
+    "fulfilled_kg": 11552.7,
+    "demand_kg": 22547.5,
+    "unmet_kg": 10994.8,
+    "fulfillment_pct": 0.5124,
+    "revenue": 518418.45,
+    "transport_cost": 53891.02,
+    "handling_cost": 19225.8,
+    "spoilage_cost": 436852.54,
+    "net_revenue": 8449.09,
+    "violations": 0
+  },
+  "replan": {
+    "method": "replan",
+    "status": "OPTIMAL",
+    "spoilage_kg": 6805.13,
+    "spoilage_pct": 0.2684,
+    "expired_kg": 0.0,
+    "clearance_kg": 6047.9,
+    "clearance_revenue": 175700.27,
+    "fulfilled_kg": 11936.5,
+    "demand_kg": 22547.5,
+    "unmet_kg": 10611.0,
+    "fulfillment_pct": 0.5294,
+    "revenue": 633034.48,
+    "transport_cost": 55935.81,
+    "handling_cost": 21581.28,
+    "spoilage_cost": 333564.61,
+    "net_revenue": 221952.78,
+    "violations": 0
+  },
+  "recovery": {
+    "spoilage_pct_reduction": 0.204,
+    "fulfillment_delta": 0.017,
+    "net_revenue_delta": 213503.69,
+    "net_revenue_delta_pct": 25.2694,
+    "violations_total": 0
+  },
+  "hard_violations": 0
+}

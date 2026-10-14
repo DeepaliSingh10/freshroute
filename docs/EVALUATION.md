@@ -76,9 +76,12 @@ delivery window, shelf-life). **Target = 0**, asserted by an independent post-ho
 report **mean** and **worst-case (P10)**; show plan *stability* under input ranges.
 
 **How we win:**
-- Monte Carlo over shelf-life/travel-time/demand/price ranges (E4).
-- A **risk-adjusted** objective (mean − λ·downside) so we don't buy average gains with
-  catastrophic worst cases.
+- Monte Carlo over shelf-life/travel-time/demand/price/capacity perturbations (E4) —
+  `scripts/run_robustness.py` → `results/robustness.json` (30 draws × 3 scenarios, seeded).
+- Replan on disruption (E3) — `scripts/run_replan.py` → `results/replan_summary.json`: keeps
+  still-valid committed shipments and re-optimizes the residual stock on the disrupted network.
+- Demand forecasting (E1) — `scripts/run_forecast.py` → `results/forecast_summary.json`:
+  holdout MAPE + a predict-then-optimize robustness check.
 - Sensitivity sliders in the UI: drag travel time/demand, watch the plan adapt.
 
 ## 6. Engineering & reproducibility (10)
@@ -109,10 +112,11 @@ operator workflow.
 
 ```
 results/
-  hidden_summary.json         # all metrics, proposed vs baseline, per scenario
-  hidden_summary.md           # human-readable table for the pitch
-  reproducibility_log.txt     # seed, config_hash, command, env
-  robustness.json             # mean/P10 across perturbations
+  phase1_summary.json         # Phase 1: baseline-vs-optimizer, no clearance channel
+  phase2_summary.json         # Phase 2: with clearance channel (+ discount recommendations)
+  robustness.json             # E4: mean/P10 across perturbed scenarios
+  forecast_summary.json       # E1: forecast backtest (MAPE) + predict-then-optimize
+  replan_summary.json         # E3: disruption replan recovery
   figures/                    # charts used in the deck
 ```
 

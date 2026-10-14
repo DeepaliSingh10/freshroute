@@ -91,6 +91,17 @@ cleared near the origin at `base_price × price_fraction` instead of spoiling. T
 FreshRoute capability: **baselines run with `include_clearance=False`** and never use it, so the
 comparison measures the value of the recovery channel.
 
+### demand history (E1)
+`app/forecast/forecaster.py::generate_demand_history` emits a deterministic **daily demand
+series** (one row per destination × commodity × day) with a weekly rhythm, per-series day-of-week
+tilt and random festival/event spikes — giving the forecaster real signal to learn. The single-day
+snapshot in `demands` remains the decision instance; the history is only used for training/testing E1.
+
+### disruptions (E3)
+Disruptions are described by `replan.Disruption` (blocked origins + network-wide travel delay) and
+applied with `apply_disruption`, which closes outbound non-clearance lanes from the blocked origins
+and delays the rest. Already-valid committed shipments are held fixed; the remainder is re-optimized.
+
 ### baseline_definition.yaml
 Documented baseline (see §4). Frozen; both parties compute it identically.
 

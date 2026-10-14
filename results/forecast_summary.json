@@ -1,0 +1,94 @@
+{
+  "phase": "owner_A_phase2_e1_forecast",
+  "cost_model_hash": "04778f090439",
+  "backtest": {
+    "train_days": 77,
+    "holdout_days": 14,
+    "n_series": 70,
+    "n_test_points": 980,
+    "methods": {
+      "model": {
+        "mae": 51.11,
+        "mape": 0.1745,
+        "bias": 0.0199
+      },
+      "naive_last": {
+        "mae": 89.63,
+        "mape": 0.2872,
+        "bias": 0.0014
+      },
+      "seasonal_naive": {
+        "mae": 78.69,
+        "mape": 0.2468,
+        "bias": 0.0002
+      }
+    }
+  },
+  "integration": {
+    "target_date": "2026-04-05",
+    "true": {
+      "method": "lp_optimizer",
+      "status": "OPTIMAL",
+      "spoilage_kg": 3779.46,
+      "spoilage_pct": 0.152,
+      "expired_kg": 0.0,
+      "clearance_kg": 5448.0,
+      "clearance_revenue": 164430.09,
+      "fulfilled_kg": 15547.0,
+      "demand_kg": 19810.4,
+      "unmet_kg": 4263.4,
+      "fulfillment_pct": 0.7848,
+      "revenue": 832694.48,
+      "transport_cost": 86840.5,
+      "handling_cost": 25194.0,
+      "spoilage_cost": 217550.33,
+      "net_revenue": 503109.65,
+      "violations": 0
+    },
+    "forecast": {
+      "method": "lp_optimizer",
+      "status": "OPTIMAL",
+      "spoilage_kg": 3652.58,
+      "spoilage_pct": 0.1469,
+      "expired_kg": 0.0,
+      "clearance_kg": 5513.32,
+      "clearance_revenue": 164736.63,
+      "fulfilled_kg": 15602.83,
+      "demand_kg": 19587.18,
+      "unmet_kg": 3984.35,
+      "fulfillment_pct": 0.7966,
+      "revenue": 849058.15,
+      "transport_cost": 85636.1,
+      "handling_cost": 25339.38,
+      "spoilage_cost": 208545.04,
+      "net_revenue": 529537.63,
+      "violations": 0
+    },
+    "forecast_plan_on_true_demand": {
+      "method": "lp_optimizer",
+      "status": "OPTIMAL",
+      "spoilage_kg": 3652.58,
+      "spoilage_pct": 0.1469,
+      "expired_kg": 0.0,
+      "clearance_kg": 5513.32,
+      "clearance_revenue": 164736.63,
+      "fulfilled_kg": 15602.83,
+      "demand_kg": 19810.4,
+      "unmet_kg": 4207.57,
+      "fulfillment_pct": 0.7876,
+      "revenue": 849058.15,
+      "transport_cost": 85636.1,
+      "handling_cost": 25339.38,
+      "spoilage_cost": 208545.04,
+      "net_revenue": 529537.63,
+      "violations": 0
+    },
+    "delta_forecast_vs_true": {
+      "spoilage_pct_reduction": 0.0336,
+      "fulfillment_delta": 0.0118,
+      "net_revenue_delta": 26427.98,
+      "net_revenue_delta_pct": 0.0525,
+      "violations_total": 0
+    }
+  }
+}

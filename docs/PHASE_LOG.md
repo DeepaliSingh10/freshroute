@@ -72,10 +72,25 @@ rule-based **discount recommendation engine**.
 Per scenario, spoilage falls **58.8%–76.3%** vs FEFO while fulfillment stays on par
 (+0.0 to +0.9 pts) — recovery is added value, not a trade against service.
 
+### Phase 2 · Part 2 — Extensions E1 / E3 / E4 ✅ (done)
+- **E1 Demand forecasting** (`app/forecast/forecaster.py`, `scripts/run_forecast.py`): transparent
+  level × day-of-week × event-uplift model over a synthetic daily history. Backtest holdout:
+  **MAPE 17.4%** vs naive-last 28.7% / seasonal-naive 24.7% (bias 2.0%). Predict-then-optimize
+  demo shows the plan is robust to forecast error (fulfillment/net-rev within ~1%).
+  → `results/forecast_summary.json`
+- **E3 Disruption replan** (`app/optimizer/replan.py`, `scripts/run_replan.py`): keeps only
+  still-valid committed shipments, then re-optimizes the residual stock (reduced stock, demand
+  and lane capacity) on the disrupted network. On a hub outage + 6h delay: spoilage
+  **−20.4%**, net revenue **+213,504**, **0 hard violations**. → `results/replan_summary.json`
+- **E4 Monte Carlo robustness** (`scripts/run_robustness.py`): 30 draws × 3 scenarios (90 solves)
+  over shelf-life/demand/travel/price/capacity perturbations. Mean spoilage reduction
+  **−57.7%** (P10 −46.3%), net-revenue delta mean **+331,772** (P10 **+271,309**), fulfillment
+  delta +0.20 pts, **0 violations**. → `results/robustness.json`
+
 ### Phase 2 — remaining
-- [ ] Demand forecasting (E1) feeding the allocator.
-- [ ] Uncertainty ranges + Monte Carlo robustness (E4).
-- [ ] Replan path on disruption (E3).
+- [ ] E2 discount timing/price under uncertainty.
+- [ ] E5 simulated temperature / live market-price feed.
+- [ ] Owner B (API + tests) and Owner C (React dashboard) integration.
 
 ## Owner B / C
 Not started in this repo yet (Owner A phases only).

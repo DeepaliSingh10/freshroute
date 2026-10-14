@@ -17,12 +17,18 @@ app/
     baseline.py       # baseline strategies (fefo / margin / naive) — no clearance
     allocator.py      # LP: maximize net revenue subject to hard constraints
     discounts.py      # rule-based discount recommendation engine (M4)
+    replan.py         # disruption replan: committed + residual re-optimization (E3)
     types.py          # Plan / Dispatch
+  forecast/
+    forecaster.py     # transparent demand forecasting + backtest (E1)
   eval/
     metrics.py        # spoilage / fulfillment / net revenue / expired / clearance
     checker.py        # INDEPENDENT hard-constraint checker (0 violations)
 scripts/
   run_phase1.py       # generate -> baseline -> optimize -> evaluate -> discounts
+  run_forecast.py     # E1: forecast backtest + predict-then-optimize
+  run_robustness.py   # E4: Monte Carlo robustness (mean/P10)
+  run_replan.py       # E3: disruption replan demo
 ```
 
 ## Setup
@@ -56,6 +62,20 @@ python scripts/run_phase1.py --write-csv --write-results
 - Clearance modeled as an optional salvage sink (never penalized), so recovery is pure upside.
 - Clearance excluded from the demand/fulfillment denominator; salvage revenue counted in net revenue.
 
+## What Phase 2 (part 2) adds — extensions
+- **E1 Demand forecasting** (`run_forecast.py`): transparent level × day-of-week × event model;
+  holdout MAPE **17.4%** vs naive 24.7–28.7%; predict-then-optimize stays within ~1%.
+- **E3 Disruption replan** (`run_replan.py`): keep committed shipments, re-optimize the residual
+  stock on the disrupted network; hub outage + 6h delay → spoilage −20.4%, net rev +213,504, 0 violations.
+- **E4 Monte Carlo robustness** (`run_robustness.py`): 30 draws × 3 scenarios; mean spoilage
+  reduction −57.7% (P10 −46.3%), net-rev delta mean +331,772 (P10 +271,309), 0 violations.
+
+```
+python scripts/run_forecast.py --write-results
+python scripts/run_robustness.py --draws 30 --write-results
+python scripts/run_replan.py --write-results
+```
+
 ## Results (see `../../results/`)
 **Phase 2 (with clearance)** — mean over train/test/hidden:
 | Comparison | Spoilage | Fulfillment | Net revenue |
@@ -72,5 +92,7 @@ python scripts/run_phase1.py --write-csv --write-results
 > Phase 1 was near-parity vs FEFO because much spoilage is *structurally stranded*. Phase 2's
 > clearance channel converts that stranded stock into recovered revenue with no fulfillment loss.
 
-## Next (Owner A Phase 2, remaining)
-Demand forecasting (E1), uncertainty/Monte Carlo (E4), replan path on disruption (E3).
+## Next
+- Extensions E2 (discount timing/price under uncertainty) and E5 (simulated temperature / live
+  market feed).
+- Owner B (FastAPI service + tests) and Owner C (React/TS dashboard).
