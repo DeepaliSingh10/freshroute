@@ -1,0 +1,466 @@
+{
+  "phase": "owner_A_sensitivity",
+  "cost_model_hash": "cef90379ab1f",
+  "curves": {
+    "demand_multiplier": {
+      "label": "Demand multiplier",
+      "range": [
+        0.8,
+        0.9,
+        1.0,
+        1.1,
+        1.2
+      ],
+      "points": [
+        {
+          "factor": "demand_multiplier",
+          "value": 0.8,
+          "optimizer": {
+            "spoilage_kg": 4906.0,
+            "fulfilled_kg": 15182.2,
+            "net_revenue": 447449.9
+          },
+          "baseline": {
+            "spoilage_kg": 9234.8,
+            "fulfilled_kg": 15182.2,
+            "net_revenue": 118150.2
+          },
+          "spoilage_reduction_pct": 46.87,
+          "net_revenue_delta": 329299.7
+        },
+        {
+          "factor": "demand_multiplier",
+          "value": 0.9,
+          "optimizer": {
+            "spoilage_kg": 3918.8,
+            "fulfilled_kg": 16352.4,
+            "net_revenue": 539529.4
+          },
+          "baseline": {
+            "spoilage_kg": 8310.0,
+            "fulfilled_kg": 16352.4,
+            "net_revenue": 188202.1
+          },
+          "spoilage_reduction_pct": 52.84,
+          "net_revenue_delta": 351327.3
+        },
+        {
+          "factor": "demand_multiplier",
+          "value": 1.0,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 626512.3
+          },
+          "baseline": {
+            "spoilage_kg": 7651.1,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 247441.6
+          },
+          "spoilage_reduction_pct": 59.4,
+          "net_revenue_delta": 379070.7
+        },
+        {
+          "factor": "demand_multiplier",
+          "value": 1.1,
+          "optimizer": {
+            "spoilage_kg": 2485.4,
+            "fulfilled_kg": 17876.0,
+            "net_revenue": 707789.9
+          },
+          "baseline": {
+            "spoilage_kg": 7107.8,
+            "fulfilled_kg": 17876.0,
+            "net_revenue": 303777.3
+          },
+          "spoilage_reduction_pct": 65.03,
+          "net_revenue_delta": 404012.6
+        },
+        {
+          "factor": "demand_multiplier",
+          "value": 1.2,
+          "optimizer": {
+            "spoilage_kg": 2068.0,
+            "fulfilled_kg": 18541.7,
+            "net_revenue": 782786.8
+          },
+          "baseline": {
+            "spoilage_kg": 6564.4,
+            "fulfilled_kg": 18541.7,
+            "net_revenue": 358465.5
+          },
+          "spoilage_reduction_pct": 68.5,
+          "net_revenue_delta": 424321.4
+        }
+      ]
+    },
+    "travel_delay_hours": {
+      "label": "Travel delay (h)",
+      "range": [
+        0.0,
+        2.0,
+        4.0,
+        6.0,
+        8.0
+      ],
+      "points": [
+        {
+          "factor": "travel_delay_hours",
+          "value": 0.0,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 626512.3
+          },
+          "baseline": {
+            "spoilage_kg": 7651.1,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 247441.6
+          },
+          "spoilage_reduction_pct": 59.4,
+          "net_revenue_delta": 379070.7
+        },
+        {
+          "factor": "travel_delay_hours",
+          "value": 2.0,
+          "optimizer": {
+            "spoilage_kg": 3314.4,
+            "fulfilled_kg": 17002.6,
+            "net_revenue": 618773.8
+          },
+          "baseline": {
+            "spoilage_kg": 7859.0,
+            "fulfilled_kg": 17002.6,
+            "net_revenue": 239506.3
+          },
+          "spoilage_reduction_pct": 57.83,
+          "net_revenue_delta": 379267.5
+        },
+        {
+          "factor": "travel_delay_hours",
+          "value": 4.0,
+          "optimizer": {
+            "spoilage_kg": 3583.1,
+            "fulfilled_kg": 16733.9,
+            "net_revenue": 581094.1
+          },
+          "baseline": {
+            "spoilage_kg": 8127.7,
+            "fulfilled_kg": 16733.9,
+            "net_revenue": 201187.2
+          },
+          "spoilage_reduction_pct": 55.92,
+          "net_revenue_delta": 379906.8
+        },
+        {
+          "factor": "travel_delay_hours",
+          "value": 6.0,
+          "optimizer": {
+            "spoilage_kg": 3928.6,
+            "fulfilled_kg": 16733.9,
+            "net_revenue": 515585.0
+          },
+          "baseline": {
+            "spoilage_kg": 8127.7,
+            "fulfilled_kg": 16733.9,
+            "net_revenue": 203623.3
+          },
+          "spoilage_reduction_pct": 51.66,
+          "net_revenue_delta": 311961.6
+        },
+        {
+          "factor": "travel_delay_hours",
+          "value": 8.0,
+          "optimizer": {
+            "spoilage_kg": 4242.1,
+            "fulfilled_kg": 16540.7,
+            "net_revenue": 457419.6
+          },
+          "baseline": {
+            "spoilage_kg": 8306.8,
+            "fulfilled_kg": 16540.7,
+            "net_revenue": 194047.0
+          },
+          "spoilage_reduction_pct": 48.93,
+          "net_revenue_delta": 263372.6
+        }
+      ]
+    },
+    "price_shock_pct": {
+      "label": "Price shock",
+      "range": [
+        -0.1,
+        -0.05,
+        0.0,
+        0.05,
+        0.1
+      ],
+      "points": [
+        {
+          "factor": "price_shock_pct",
+          "value": -0.1,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 534101.5
+          },
+          "baseline": {
+            "spoilage_kg": 7651.1,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 172563.9
+          },
+          "spoilage_reduction_pct": 59.4,
+          "net_revenue_delta": 361537.6
+        },
+        {
+          "factor": "price_shock_pct",
+          "value": -0.05,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 580280.0
+          },
+          "baseline": {
+            "spoilage_kg": 7651.1,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 209281.7
+          },
+          "spoilage_reduction_pct": 59.4,
+          "net_revenue_delta": 370998.3
+        },
+        {
+          "factor": "price_shock_pct",
+          "value": 0.0,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 626512.3
+          },
+          "baseline": {
+            "spoilage_kg": 7651.1,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 247441.6
+          },
+          "spoilage_reduction_pct": 59.4,
+          "net_revenue_delta": 379070.7
+        },
+        {
+          "factor": "price_shock_pct",
+          "value": 0.05,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 672744.6
+          },
+          "baseline": {
+            "spoilage_kg": 7651.1,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 285601.5
+          },
+          "spoilage_reduction_pct": 59.4,
+          "net_revenue_delta": 387143.1
+        },
+        {
+          "factor": "price_shock_pct",
+          "value": 0.1,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 718942.8
+          },
+          "baseline": {
+            "spoilage_kg": 7651.1,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 323755.1
+          },
+          "spoilage_reduction_pct": 59.4,
+          "net_revenue_delta": 395187.7
+        }
+      ]
+    },
+    "lane_capacity_multiplier": {
+      "label": "Lane capacity x",
+      "range": [
+        0.3,
+        0.5,
+        0.7,
+        1.0,
+        1.5
+      ],
+      "points": [
+        {
+          "factor": "lane_capacity_multiplier",
+          "value": 0.3,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 15336.0,
+            "net_revenue": 577198.6
+          },
+          "baseline": {
+            "spoilage_kg": 9338.2,
+            "fulfilled_kg": 14623.1,
+            "net_revenue": 166871.1
+          },
+          "spoilage_reduction_pct": 66.73,
+          "net_revenue_delta": 410327.5
+        },
+        {
+          "factor": "lane_capacity_multiplier",
+          "value": 0.5,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 608525.7
+          },
+          "baseline": {
+            "spoilage_kg": 7666.4,
+            "fulfilled_kg": 17185.1,
+            "net_revenue": 236299.4
+          },
+          "spoilage_reduction_pct": 59.48,
+          "net_revenue_delta": 372226.2
+        },
+        {
+          "factor": "lane_capacity_multiplier",
+          "value": 0.7,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 619600.5
+          },
+          "baseline": {
+            "spoilage_kg": 7651.1,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 245911.5
+          },
+          "spoilage_reduction_pct": 59.4,
+          "net_revenue_delta": 373689.1
+        },
+        {
+          "factor": "lane_capacity_multiplier",
+          "value": 1.0,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 626512.3
+          },
+          "baseline": {
+            "spoilage_kg": 7651.1,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 247441.6
+          },
+          "spoilage_reduction_pct": 59.4,
+          "net_revenue_delta": 379070.7
+        },
+        {
+          "factor": "lane_capacity_multiplier",
+          "value": 1.5,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 627192.1
+          },
+          "baseline": {
+            "spoilage_kg": 7651.1,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 247289.4
+          },
+          "spoilage_reduction_pct": 59.4,
+          "net_revenue_delta": 379902.7
+        }
+      ]
+    },
+    "rsl_noise_pct": {
+      "label": "Shelf-life noise",
+      "range": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2
+      ],
+      "points": [
+        {
+          "factor": "rsl_noise_pct",
+          "value": 0.0,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 626512.3
+          },
+          "baseline": {
+            "spoilage_kg": 7651.1,
+            "fulfilled_kg": 17210.5,
+            "net_revenue": 247441.6
+          },
+          "spoilage_reduction_pct": 59.4,
+          "net_revenue_delta": 379070.7
+        },
+        {
+          "factor": "rsl_noise_pct",
+          "value": 0.05,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17384.8,
+            "net_revenue": 627326.5
+          },
+          "baseline": {
+            "spoilage_kg": 7494.3,
+            "fulfilled_kg": 17384.8,
+            "net_revenue": 251408.6
+          },
+          "spoilage_reduction_pct": 58.55,
+          "net_revenue_delta": 375917.9
+        },
+        {
+          "factor": "rsl_noise_pct",
+          "value": 0.1,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17311.6,
+            "net_revenue": 624156.5
+          },
+          "baseline": {
+            "spoilage_kg": 7567.5,
+            "fulfilled_kg": 17311.6,
+            "net_revenue": 246708.8
+          },
+          "spoilage_reduction_pct": 58.95,
+          "net_revenue_delta": 377447.7
+        },
+        {
+          "factor": "rsl_noise_pct",
+          "value": 0.15,
+          "optimizer": {
+            "spoilage_kg": 3375.2,
+            "fulfilled_kg": 16868.6,
+            "net_revenue": 586898.1
+          },
+          "baseline": {
+            "spoilage_kg": 7993.0,
+            "fulfilled_kg": 16868.6,
+            "net_revenue": 206494.1
+          },
+          "spoilage_reduction_pct": 57.77,
+          "net_revenue_delta": 380404.0
+        },
+        {
+          "factor": "rsl_noise_pct",
+          "value": 0.2,
+          "optimizer": {
+            "spoilage_kg": 3106.5,
+            "fulfilled_kg": 17311.6,
+            "net_revenue": 624270.1
+          },
+          "baseline": {
+            "spoilage_kg": 7567.5,
+            "fulfilled_kg": 17311.6,
+            "net_revenue": 249708.9
+          },
+          "spoilage_reduction_pct": 58.95,
+          "net_revenue_delta": 374561.2
+        }
+      ]
+    }
+  }
+}

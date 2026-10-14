@@ -132,7 +132,10 @@ produce a lognormal (`price_feed.volatility`) per-commodity price walk and scale
 prices on each tick (clearance prices untouched). No new files on disk — these are runtime transforms.
 
 ### baseline_definition.yaml
-Documented baseline (see §4). Frozen; both parties compute it identically.
+Frozen baseline spec (see §4), shipped at `apps/api/app/data/baseline_definition.yaml`. Lists the
+strategies (`fefo` = strong reference, `margin`, `nearest`, `naive`), each with its batch order and
+destination order. `fefo`/`margin`/`nearest` are shelf-life-feasible; `naive` is shelf-life-blind.
+All baselines ship greedily and never use the clearance channel. Both parties compute it identically.
 
 ### scenarios.csv
 `scenario_id`, `seed`, `now_ts`, `split` (`train`/`test`/`hidden`), `perturbation_profile`

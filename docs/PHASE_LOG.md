@@ -100,6 +100,14 @@ Per scenario, spoilage falls **58.8%–76.3%** vs FEFO while fulfillment stays o
   **0 violations**. A lognormal market-price walk moves net revenue 626,512 → **648,001** as the
   plan re-solves on each tick. → `results/telemetry_summary.json`
 
+### Owner A completeness
+- **Frozen baseline definition** `app/data/baseline_definition.yaml` now materializes the baseline
+  (strategies `fefo` / `margin` / `nearest` / `naive`, all shelf-life-feasible except `naive`).
+- Added the **nearest-first greedy** baseline strategy (`baseline.py::solve_baseline(..., "nearest")`).
+- **Sensitivity engine** (`app/eval/sensitivity.py`, `scripts/run_sensitivity.py`): one-factor sweeps
+  (demand, travel delay, price shock, lane capacity, shelf-life noise) → curves for the UI sliders.
+  → `results/sensitivity_summary.json`. Every Owner A deliverable in `WORKSTREAMS.md` is now present.
+
 ### Phase 2 — remaining
 - [ ] Owner B (FastAPI service + tests) and Owner C (React dashboard) integration.
 

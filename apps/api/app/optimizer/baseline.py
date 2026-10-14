@@ -4,10 +4,13 @@ Strategies:
   - "fefo"  : FEFO (first-expired-first-out) + best-margin feasible market. Urgency-aware
               and shelf-life-feasible. The STRONG baseline we must still beat.
   - "margin": urgency-blind; ships the most profitable stock first (still feasibility-checked).
+  - "nearest": FEFO order, but each batch goes to the CLOSEST feasible destination (greedy).
   - "naive" : price-first and SHELF-LIFE-BLIND. Ships to the highest-price market without
               checking whether it can arrive before the produce expires. Doomed cargo is
               surfaced by the metrics layer as "expired on arrival" (lost revenue + wasted
               transport). This is the common real-world failure FreshRoute fixes (MVP item M3).
+
+The frozen definition of every strategy is `app/data/baseline_definition.yaml`.
 """
 
 from __future__ import annotations
@@ -50,8 +53,13 @@ def _solve_feasible_greedy(instance: Instance, cost_model: CostModel, strategy: 
             )
 
         ordered = sorted(instance.batches.values(), key=lambda b: -best_margin(b))
-    else:  # fefo
+    else:  # fefo / nearest share the FEFO batch order
         ordered = sorted(instance.batches.values(), key=lambda b: b.remaining_shelf_life_days)
+
+    if strategy == "nearest":
+        dest_key = lambda p: (p.travel_time_hours, -p.margin_per_kg)  # noqa: E731
+    else:
+        dest_key = lambda p: (-p.margin_per_kg, p.travel_time_hours)  # noqa: E731
 
     for b in ordered:
         candidates = [
@@ -61,7 +69,7 @@ def _solve_feasible_greedy(instance: Instance, cost_model: CostModel, strategy: 
             and remaining_demand.get((did, b.commodity_id), 0.0) > EPS
             and remaining_lane.get((p.origin_id, did), 0.0) > EPS
         ]
-        candidates.sort(key=lambda p: (-p.margin_per_kg, p.travel_time_hours))
+        candidates.sort(key=dest_key)
 
         remaining = b.quantity_kg
         for p in candidates:

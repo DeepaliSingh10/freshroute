@@ -25,6 +25,7 @@ app/
   eval/
     metrics.py        # spoilage / fulfillment / net revenue / expired / clearance
     checker.py        # INDEPENDENT hard-constraint checker (0 violations)
+    sensitivity.py    # one-factor sweeps feeding the UI sliders
 scripts/
   run_phase1.py       # generate -> baseline -> optimize -> evaluate -> discounts
   run_forecast.py     # E1: forecast backtest + predict-then-optimize
@@ -32,6 +33,7 @@ scripts/
   run_replan.py       # E3: disruption replan demo
   run_discount_policy.py # E2: optimized markdown vs fixed rule
   run_telemetry.py    # E5: cold-chain telemetry + market-price feed
+  run_sensitivity.py  # one-factor sensitivity curves for the UI
 ```
 
 ## Setup

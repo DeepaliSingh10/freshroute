@@ -1,0 +1,43 @@
+# Frozen baseline definition (docs/DATA_SPEC.md §4, docs/EVALUATION.md §1).
+#
+# Both Owner A (optimizer) and Owner B (metrics/API) must compute the baseline
+# IDENTICALLY from this file + cost_model.yaml. Changing this file is a schema
+# change and must be announced at a handoff gate.
+version: 1
+reference_cost_model: cost_model.yaml
+
+# The STRONG baseline that FreshRoute must still beat.
+strong_baseline: fefo
+
+strategies:
+  fefo:
+    description: First-expired-first-out batches, each sent to the best-margin
+      feasible market (shelf-life checked). Urgency-aware.
+    batch_order: ascending_remaining_shelf_life_days
+    destination_order: [descending_margin_per_kg, ascending_travel_time_hours]
+    shelf_life_feasible: true
+    uses_clearance_channel: false
+  margin:
+    description: Profit-first batches (urgency-blind), still shelf-life feasible.
+    batch_order: descending_best_feasible_margin_per_kg
+    destination_order: [descending_margin_per_kg, ascending_travel_time_hours]
+    shelf_life_feasible: true
+    uses_clearance_channel: false
+  nearest:
+    description: FEFO batch order, but each batch ships to the CLOSEST feasible
+      destination first (nearest-first greedy). A common naive dispatch rule.
+    batch_order: ascending_remaining_shelf_life_days
+    destination_order: [ascending_travel_time_hours, descending_margin_per_kg]
+    shelf_life_feasible: true
+    uses_clearance_channel: false
+  naive:
+    description: Price-first and SHELF-LIFE-BLIND. Ships to the highest-price
+      market without checking arrival-before-expiry. Doomed cargo is surfaced by
+      the metrics layer as expired-on-arrival (MVP item M3).
+    batch_order: as_generated
+    destination_order: [descending_effective_price_per_kg, ascending_travel_time_hours]
+    shelf_life_feasible: false
+    uses_clearance_channel: false
+
+# Every baseline ships greedy (no joint re-allocation) and never uses the local
+# clearance channel, which is a FreshRoute-only recovery capability.
