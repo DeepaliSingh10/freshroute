@@ -1,0 +1,102 @@
+{
+  "phase": "owner_A_phase2_e5_telemetry",
+  "cost_model_hash": "cef90379ab1f",
+  "cold_chain": {
+    "threshold_c": 8.0,
+    "n_readings": 322,
+    "n_excursion_batches": 16,
+    "total_degree_hours": 249.35,
+    "total_life_lost_batch_days": 10.39,
+    "nominal": {
+      "method": "lp_optimizer",
+      "status": "OPTIMAL",
+      "spoilage_kg": 3106.5,
+      "spoilage_pct": 0.1225,
+      "expired_kg": 0.0,
+      "clearance_kg": 5033.9,
+      "clearance_revenue": 159363.34,
+      "fulfilled_kg": 17210.5,
+      "demand_kg": 22547.5,
+      "unmet_kg": 5337.0,
+      "fulfillment_pct": 0.7633,
+      "revenue": 924282.62,
+      "transport_cost": 83889.05,
+      "handling_cost": 26693.28,
+      "spoilage_cost": 187188.0,
+      "net_revenue": 626512.29,
+      "violations": 0
+    },
+    "ignore_telemetry": {
+      "method": "lp_optimizer",
+      "status": "OPTIMAL",
+      "spoilage_kg": 3604.5,
+      "spoilage_pct": 0.1422,
+      "expired_kg": 498.0,
+      "clearance_kg": 5033.9,
+      "clearance_revenue": 159363.34,
+      "fulfilled_kg": 16712.5,
+      "demand_kg": 22547.5,
+      "unmet_kg": 5835.0,
+      "fulfillment_pct": 0.7412,
+      "revenue": 877504.56,
+      "transport_cost": 83889.05,
+      "handling_cost": 26693.28,
+      "spoilage_cost": 214080.0,
+      "net_revenue": 552842.23,
+      "violations": 0,
+      "hard_violations": 5
+    },
+    "temp_aware_replan": {
+      "method": "lp_optimizer",
+      "status": "OPTIMAL",
+      "spoilage_kg": 4073.2,
+      "spoilage_pct": 0.1607,
+      "expired_kg": 0.0,
+      "clearance_kg": 4565.2,
+      "clearance_revenue": 146433.64,
+      "fulfilled_kg": 16712.5,
+      "demand_kg": 22547.5,
+      "unmet_kg": 5835.0,
+      "fulfillment_pct": 0.7412,
+      "revenue": 867396.19,
+      "transport_cost": 80952.67,
+      "handling_cost": 25533.24,
+      "spoilage_cost": 231572.52,
+      "net_revenue": 529337.77,
+      "violations": 0,
+      "hard_violations": 0
+    }
+  },
+  "price_feed": {
+    "ticks": [
+      {
+        "tick": 0,
+        "mean_price_factor": 1.0,
+        "spoilage_kg": 3106.5,
+        "fulfilled_kg": 17210.5,
+        "net_revenue": 626512.3
+      },
+      {
+        "tick": 1,
+        "mean_price_factor": 1.0071,
+        "spoilage_kg": 3106.5,
+        "fulfilled_kg": 17210.5,
+        "net_revenue": 645807.1
+      },
+      {
+        "tick": 2,
+        "mean_price_factor": 1.0032,
+        "spoilage_kg": 3106.5,
+        "fulfilled_kg": 17210.5,
+        "net_revenue": 645623.0
+      },
+      {
+        "tick": 3,
+        "mean_price_factor": 1.0059,
+        "spoilage_kg": 3106.5,
+        "fulfilled_kg": 17210.5,
+        "net_revenue": 648000.9
+      }
+    ]
+  }
+}

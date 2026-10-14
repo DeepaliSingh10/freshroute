@@ -81,6 +81,26 @@ clearance:                            # local recovery channel (Phase 2, FreshRo
   transport_cost_per_kg: 0.5
   lane_capacity_kg: 1000000
   min_days_fresh: 0.0
+discount_policy:                      # E2 optimized markdown (disclosed model)
+  levels: [0.0, 0.10, 0.20, 0.30, 0.40, 0.50]
+  hold_fractions: [0.0, 0.25, 0.50]
+  elasticity: 1.5
+  full_price_rate: 0.10
+  clear_rate: 0.55
+  rsl_noise: 0.15
+  demand_noise: 0.25
+  n_draws: 400
+cold_chain:                           # E5 telemetry (IoT sensor simulation)
+  ideal_temp_c: 4.0
+  threshold_temp_c: 8.0
+  excursion_prob: 0.25
+  excursion_rise_c: 7.0
+  degree_hours_per_day_lost: 24.0
+  sample_interval_hours: 4.0
+  horizon_hours: 24.0
+price_feed:                           # E5 live market-price walk
+  n_ticks: 3
+  volatility: 0.06
 ```
 
 ### clearance outlets (Phase 2, MVP M4)
@@ -101,6 +121,15 @@ snapshot in `demands` remains the decision instance; the history is only used fo
 Disruptions are described by `replan.Disruption` (blocked origins + network-wide travel delay) and
 applied with `apply_disruption`, which closes outbound non-clearance lanes from the blocked origins
 and delays the rest. Already-valid committed shipments are held fixed; the remainder is re-optimized.
+
+### telemetry (E5)
+`telemetry.simulate_temperatures` emits `TemperatureReading(batch_id, hour, temp_c)` samples at
+`cold_chain.sample_interval_hours` over `horizon_hours`; some batches (prob `excursion_prob`) get a
+`excursion_rise_c` spike. Degree-hours above `threshold_temp_c` are integrated by trapezoid and
+converted to lost shelf life via `degree_hours_per_day_lost`. `apply_temperature_effect` returns an
+instance copy with reduced `remaining_shelf_life_days`. `simulate_price_feed` / `apply_price_feed`
+produce a lognormal (`price_feed.volatility`) per-commodity price walk and scale market demand
+prices on each tick (clearance prices untouched). No new files on disk — these are runtime transforms.
 
 ### baseline_definition.yaml
 Documented baseline (see §4). Frozen; both parties compute it identically.

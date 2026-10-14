@@ -1,0 +1,233 @@
+{
+  "scenario": {
+    "seed": 303,
+    "split": "hidden"
+  },
+  "n_at_risk_batches": 18,
+  "n_marked_down": 9,
+  "totals": {
+    "expected_value": 666984.93,
+    "rule_30_value": 466061.8,
+    "no_discount_value": 517718.06,
+    "uplift_vs_rule_30": 200923.13,
+    "uplift_vs_no_discount": 149266.87
+  },
+  "decisions": [
+    {
+      "batch_id": "B0001",
+      "commodity": "Tomato",
+      "quantity_kg": 315.6,
+      "remaining_shelf_life_days": 1.27,
+      "discount_pct": 0.2,
+      "hold_days": 0.0,
+      "expected_value": 5768.29,
+      "p10_value": 3252.75,
+      "rule_30_value": 5761.85,
+      "reason": "Tomato batch B0001: mark down 20% after holding 0.0d (price-elastic clearance), vs fixed 30% rule -> uplift +6; expected 5,768 (P10 3,253) on 316kg at 1.3d life."
+    },
+    {
+      "batch_id": "B0005",
+      "commodity": "Spinach",
+      "quantity_kg": 504.3,
+      "remaining_shelf_life_days": 0.62,
+      "discount_pct": 0.5,
+      "hold_days": 0.0,
+      "expected_value": 4221.77,
+      "p10_value": 1611.95,
+      "rule_30_value": 2079.58,
+      "reason": "Spinach batch B0005: mark down 50% after holding 0.0d (price-elastic clearance), vs fixed 30% rule -> uplift +2,142; expected 4,222 (P10 1,612) on 504kg at 0.6d life."
+    },
+    {
+      "batch_id": "B0006",
+      "commodity": "Spinach",
+      "quantity_kg": 909.7,
+      "remaining_shelf_life_days": 0.96,
+      "discount_pct": 0.4,
+      "hold_days": 0.0,
+      "expected_value": 10841.22,
+      "p10_value": 7463.12,
+      "rule_30_value": 10253.2,
+      "reason": "Spinach batch B0006: mark down 40% after holding 0.0d (price-elastic clearance), vs fixed 30% rule -> uplift +588; expected 10,841 (P10 7,463) on 910kg at 1.0d life."
+    },
+    {
+      "batch_id": "B0007",
+      "commodity": "Spinach",
+      "quantity_kg": 296.6,
+      "remaining_shelf_life_days": 0.96,
+      "discount_pct": 0.4,
+      "hold_days": 0.0,
+      "expected_value": 3529.64,
+      "p10_value": 2272.47,
+      "rule_30_value": 3371.94,
+      "reason": "Spinach batch B0007: mark down 40% after holding 0.0d (price-elastic clearance), vs fixed 30% rule -> uplift +158; expected 3,530 (P10 2,272) on 297kg at 1.0d life."
+    },
+    {
+      "batch_id": "B0009",
+      "commodity": "Strawberry",
+      "quantity_kg": 1038.5,
+      "remaining_shelf_life_days": 0.52,
+      "discount_pct": 0.5,
+      "hold_days": 0.0,
+      "expected_value": 51037.39,
+      "p10_value": 6875.2,
+      "rule_30_value": 11374.71,
+      "reason": "Strawberry batch B0009: mark down 50% after holding 0.0d (price-elastic clearance), vs fixed 30% rule -> uplift +39,663; expected 51,037 (P10 6,875) on 1038kg at 0.5d life."
+    },
+    {
+      "batch_id": "B0010",
+      "commodity": "Strawberry",
+      "quantity_kg": 1087.7,
+      "remaining_shelf_life_days": 2.83,
+      "discount_pct": 0.0,
+      "hold_days": 0.0,
+      "expected_value": 193656.69,
+      "p10_value": 195786.0,
+      "rule_30_value": 137050.2,
+      "reason": "Strawberry batch B0010: hold at full price (no markdown) \u2014 remaining life 2.8d still supports full-price selling; expected value 193,657."
+    },
+    {
+      "batch_id": "B0011",
+      "commodity": "Strawberry",
+      "quantity_kg": 337.9,
+      "remaining_shelf_life_days": 2.03,
+      "discount_pct": 0.0,
+      "hold_days": 0.0,
+      "expected_value": 56160.4,
+      "p10_value": 42404.13,
+      "rule_30_value": 42566.76,
+      "reason": "Strawberry batch B0011: hold at full price (no markdown) \u2014 remaining life 2.0d still supports full-price selling; expected value 56,160."
+    },
+    {
+      "batch_id": "B0012",
+      "commodity": "Strawberry",
+      "quantity_kg": 747.5,
+      "remaining_shelf_life_days": 0.61,
+      "discount_pct": 0.5,
+      "hold_days": 0.0,
+      "expected_value": 50985.31,
+      "p10_value": 17689.48,
+      "rule_30_value": 21524.31,
+      "reason": "Strawberry batch B0012: mark down 50% after holding 0.0d (price-elastic clearance), vs fixed 30% rule -> uplift +29,461; expected 50,985 (P10 17,689) on 748kg at 0.6d life."
+    },
+    {
+      "batch_id": "B0023",
+      "commodity": "Onion",
+      "quantity_kg": 1683.9,
+      "remaining_shelf_life_days": 13.46,
+      "discount_pct": 0.0,
+      "hold_days": 0.0,
+      "expected_value": 30310.2,
+      "p10_value": 30310.2,
+      "rule_30_value": 21217.14,
+      "reason": "Onion batch B0023: hold at full price (no markdown) \u2014 remaining life 13.5d still supports full-price selling; expected value 30,310."
+    },
+    {
+      "batch_id": "B0025",
+      "commodity": "Onion",
+      "quantity_kg": 537.6,
+      "remaining_shelf_life_days": 30.34,
+      "discount_pct": 0.0,
+      "hold_days": 0.0,
+      "expected_value": 9676.8,
+      "p10_value": 9676.8,
+      "rule_30_value": 6773.76,
+      "reason": "Onion batch B0025: hold at full price (no markdown) \u2014 remaining life 30.3d still supports full-price selling; expected value 9,677."
+    },
+    {
+      "batch_id": "B0026",
+      "commodity": "Onion",
+      "quantity_kg": 594.4,
+      "remaining_shelf_life_days": 42.28,
+      "discount_pct": 0.0,
+      "hold_days": 0.0,
+      "expected_value": 10699.2,
+      "p10_value": 10699.2,
+      "rule_30_value": 7489.44,
+      "reason": "Onion batch B0026: hold at full price (no markdown) \u2014 remaining life 42.3d still supports full-price selling; expected value 10,699."
+    },
+    {
+      "batch_id": "B0028",
+      "commodity": "Onion",
+      "quantity_kg": 491.0,
+      "remaining_shelf_life_days": 39.17,
+      "discount_pct": 0.0,
+      "hold_days": 0.0,
+      "expected_value": 8838.0,
+      "p10_value": 8838.0,
+      "rule_30_value": 6186.6,
+      "reason": "Onion batch B0028: hold at full price (no markdown) \u2014 remaining life 39.2d still supports full-price selling; expected value 8,838."
+    },
+    {
+      "batch_id": "B0034",
+      "commodity": "Cauliflower",
+      "quantity_kg": 460.4,
+      "remaining_shelf_life_days": 2.77,
+      "discount_pct": 0.0,
+      "hold_days": 0.0,
+      "expected_value": 13675.43,
+      "p10_value": 13812.0,
+      "rule_30_value": 9668.4,
+      "reason": "Cauliflower batch B0034: hold at full price (no markdown) \u2014 remaining life 2.8d still supports full-price selling; expected value 13,675."
+    },
+    {
+      "batch_id": "B0035",
+      "commodity": "Cauliflower",
+      "quantity_kg": 514.0,
+      "remaining_shelf_life_days": 1.76,
+      "discount_pct": 0.1,
+      "hold_days": 0.0,
+      "expected_value": 12899.52,
+      "p10_value": 9982.94,
+      "rule_30_value": 10728.93,
+      "reason": "Cauliflower batch B0035: mark down 10% after holding 0.0d (price-elastic clearance), vs fixed 30% rule -> uplift +2,171; expected 12,900 (P10 9,983) on 514kg at 1.8d life."
+    },
+    {
+      "batch_id": "B0037",
+      "commodity": "Cauliflower",
+      "quantity_kg": 801.1,
+      "remaining_shelf_life_days": 3.49,
+      "discount_pct": 0.0,
+      "hold_days": 0.0,
+      "expected_value": 24019.95,
+      "p10_value": 24033.0,
+      "rule_30_value": 16823.1,
+      "reason": "Cauliflower batch B0037: hold at full price (no markdown) \u2014 remaining life 3.5d still supports full-price selling; expected value 24,020."
+    },
+    {
+      "batch_id": "B0038",
+      "commodity": "Cauliflower",
+      "quantity_kg": 909.0,
+      "remaining_shelf_life_days": 4.66,
+      "discount_pct": 0.0,
+      "hold_days": 0.0,
+      "expected_value": 27270.0,
+      "p10_value": 27270.0,
+      "rule_30_value": 19089.0,
+      "reason": "Cauliflower batch B0038: hold at full price (no markdown) \u2014 remaining life 4.7d still supports full-price selling; expected value 27,270."
+    },
+    {
+      "batch_id": "B0040",
+      "commodity": "Grapes",
+      "quantity_kg": 557.8,
+      "remaining_shelf_life_days": 1.43,
+      "discount_pct": 0.2,
+      "hold_days": 0.0,
+      "expected_value": 36487.84,
+      "p10_value": 26274.26,
+      "rule_30_value": 34268.72,
+      "reason": "Grapes batch B0040: mark down 20% after holding 0.0d (price-elastic clearance), vs fixed 30% rule -> uplift +2,219; expected 36,488 (P10 26,274) on 558kg at 1.4d life."
+    },
+    {
+      "batch_id": "B0041",
+      "commodity": "Grapes",
+      "quantity_kg": 1595.4,
+      "remaining_shelf_life_days": 1.68,
+      "discount_pct": 0.1,
+      "hold_days": 0.0,
+      "expected_value": 116907.28,
+      "p10_value": 84283.38,
+      "rule_30_value": 99834.16,
+      "reason": "Grapes batch B0041: mark down 10% after holding 0.0d (price-elastic clearance), vs fixed 30% rule -> uplift +17,073; expected 116,907 (P10 84,283) on 1595kg at 1.7d life."
+    }
+  ]
+}

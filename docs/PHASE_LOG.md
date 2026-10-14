@@ -72,12 +72,19 @@ rule-based **discount recommendation engine**.
 Per scenario, spoilage falls **58.8%–76.3%** vs FEFO while fulfillment stays on par
 (+0.0 to +0.9 pts) — recovery is added value, not a trade against service.
 
-### Phase 2 · Part 2 — Extensions E1 / E3 / E4 ✅ (done)
+### Phase 2 · Part 2 — Extensions E1–E5 ✅ (done)
 - **E1 Demand forecasting** (`app/forecast/forecaster.py`, `scripts/run_forecast.py`): transparent
   level × day-of-week × event-uplift model over a synthetic daily history. Backtest holdout:
   **MAPE 17.4%** vs naive-last 28.7% / seasonal-naive 24.7% (bias 2.0%). Predict-then-optimize
   demo shows the plan is robust to forecast error (fulfillment/net-rev within ~1%).
   → `results/forecast_summary.json`
+- **E2 Optimized markdown timing/price** (`app/optimizer/discount_policy.py`,
+  `scripts/run_discount_policy.py`): per at-risk batch we search (discount depth × days-to-hold)
+  to maximize expected recovered value under shelf-life & demand uncertainty, with a disclosed
+  price-elastic clearance response. On hidden scenario: 18 at-risk batches, 9 marked down;
+  expected value **666,985** vs fixed-30% rule 466,062 (**+200,923**, ~+43%) and vs no discount
+  **+149,267**. Short-life batches get deep discounts (40–50%), long-life batches sell at full price.
+  → `results/discount_policy_summary.json`
 - **E3 Disruption replan** (`app/optimizer/replan.py`, `scripts/run_replan.py`): keeps only
   still-valid committed shipments, then re-optimizes the residual stock (reduced stock, demand
   and lane capacity) on the disrupted network. On a hub outage + 6h delay: spoilage
@@ -86,11 +93,15 @@ Per scenario, spoilage falls **58.8%–76.3%** vs FEFO while fulfillment stays o
   over shelf-life/demand/travel/price/capacity perturbations. Mean spoilage reduction
   **−57.7%** (P10 −46.3%), net-revenue delta mean **+331,772** (P10 **+271,309**), fulfillment
   delta +0.20 pts, **0 violations**. → `results/robustness.json`
+- **E5 Cold-chain telemetry + live price feed** (`app/data/telemetry.py`,
+  `scripts/run_telemetry.py`): simulated per-batch temperature readings; degree-hours above
+  threshold reduce remaining shelf life (16/46 batches hit, 10.4 batch-days lost). Ignoring
+  telemetry yields **5 infeasible shipments**; a temperature-aware replan restores
+  **0 violations**. A lognormal market-price walk moves net revenue 626,512 → **648,001** as the
+  plan re-solves on each tick. → `results/telemetry_summary.json`
 
 ### Phase 2 — remaining
-- [ ] E2 discount timing/price under uncertainty.
-- [ ] E5 simulated temperature / live market-price feed.
-- [ ] Owner B (API + tests) and Owner C (React dashboard) integration.
+- [ ] Owner B (FastAPI service + tests) and Owner C (React dashboard) integration.
 
 ## Owner B / C
 Not started in this repo yet (Owner A phases only).

@@ -110,13 +110,13 @@ evaluation reproducible.
 
 ## 6. Optional extensions checklist (target all 5)
 
-| # | Extension | Owner | MVP→Ext |
-|---|-----------|-------|---------|
-| E1 | Forecast destination demand (history / events / seasonality) | A | Phase 2 |
-| E2 | Optimize discount timing/price under uncertainty | A | Phase 2 |
-| E3 | Replan on route disruption / capacity change / new order | A+B | Phase 2 |
-| E4 | Uncertainty ranges for shelf life/travel/demand + explain impact | A | Phase 2 |
-| E5 | Simulated temperature readings or live market-price feed | A+C | Phase 2 |
+| # | Extension | Owner | MVP→Ext | Status |
+|---|-----------|-------|---------|--------|
+| E1 | Forecast destination demand (history / events / seasonality) | A | Phase 2 | ✅ done |
+| E2 | Optimize discount timing/price under uncertainty | A | Phase 2 | ✅ done |
+| E3 | Replan on route disruption / capacity change / new order | A+B | Phase 2 | ✅ solver done (API pending) |
+| E4 | Uncertainty ranges for shelf life/travel/demand + explain impact | A | Phase 2 | ✅ done |
+| E5 | Simulated temperature readings or live market-price feed | A+C | Phase 2 | ✅ done |
 
 ---
 

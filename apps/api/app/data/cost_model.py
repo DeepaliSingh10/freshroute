@@ -41,6 +41,20 @@ class CostModel:
     def spoilage_fraction(self, perishability_class: str) -> float:
         return float(self.spoilage_cost_fraction.get(perishability_class, 1.0))
 
+    # --- E2 discount-policy params (with defaults) ---
+    @property
+    def discount_policy(self) -> dict:
+        return self.raw.get("discount_policy", {})
+
+    # --- E5 cold-chain / price-feed params ---
+    @property
+    def cold_chain(self) -> dict:
+        return self.raw.get("cold_chain", {})
+
+    @property
+    def price_feed(self) -> dict:
+        return self.raw.get("price_feed", {})
+
     # --- clearance channel helpers ---
     @property
     def clearance_price_fraction(self) -> float:

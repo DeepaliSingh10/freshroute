@@ -27,6 +27,20 @@ discount_ladder:
   t2_days: 1.5
   d2: 0.30
 
+# E2: optimized markdown timing/price under uncertainty (disclosed model).
+# For each at-risk batch we search (discount depth x days-to-hold) to maximize
+# expected recovered value under demand / shelf-life uncertainty. A price-elastic
+# clearance response means deeper discounts clear more stock.
+discount_policy:
+  levels: [0.0, 0.10, 0.20, 0.30, 0.40, 0.50]   # candidate markdown depths
+  hold_fractions: [0.0, 0.25, 0.50]              # wait this fraction of remaining life before markdown
+  elasticity: 1.5                                # clearance qty multiplier = (1/(1-d))^elasticity
+  full_price_rate: 0.10                          # fraction of batch sellable per day at full price
+  clear_rate: 0.55                               # fraction clearable per day at full price (pre-elasticity)
+  rsl_noise: 0.15                                # relative RSL uncertainty per draw
+  demand_noise: 0.25                             # lognormal demand shock sigma per draw
+  n_draws: 400                                   # Monte Carlo draws per batch
+
 # Time assumed for handling/inspection at the destination, in days.
 shelf_life_buffer_days: 0.25
 
@@ -39,4 +53,18 @@ clearance:
   transport_cost_per_kg: 0.5
   lane_capacity_kg: 1000000
   min_days_fresh: 0.0
+
+# E5: simulated cold-chain telemetry + market-price feed (disclosed model).
+cold_chain:
+  ideal_temp_c: 4.0              # nominal holding temperature
+  threshold_temp_c: 8.0          # above this, spoilage accelerates
+  excursion_prob: 0.25           # per-batch chance of a temperature excursion
+  excursion_rise_c: 7.0          # magnitude of an excursion above nominal
+  degree_hours_per_day_lost: 24.0  # 24 degree-hours above threshold costs 1 day of life
+  sample_interval_hours: 4.0
+  horizon_hours: 24.0
+
+price_feed:
+  n_ticks: 3                     # number of market ticks to simulate
+  volatility: 0.06               # per-tick lognormal price shock sigma
 

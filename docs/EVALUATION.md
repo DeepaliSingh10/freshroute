@@ -80,6 +80,10 @@ report **mean** and **worst-case (P10)**; show plan *stability* under input rang
   `scripts/run_robustness.py` → `results/robustness.json` (30 draws × 3 scenarios, seeded).
 - Replan on disruption (E3) — `scripts/run_replan.py` → `results/replan_summary.json`: keeps
   still-valid committed shipments and re-optimizes the residual stock on the disrupted network.
+- Optimized markdown (E2) — `scripts/run_discount_policy.py` → `results/discount_policy_summary.json`:
+  depth × timing chosen to maximize expected recovered value under uncertainty.
+- Cold-chain telemetry + price feed (E5) — `scripts/run_telemetry.py` → `results/telemetry_summary.json`:
+  temperature-driven shelf-life loss (and the infeasibility of ignoring it) plus a market-price walk.
 - Demand forecasting (E1) — `scripts/run_forecast.py` → `results/forecast_summary.json`:
   holdout MAPE + a predict-then-optimize robustness check.
 - Sensitivity sliders in the UI: drag travel time/demand, watch the plan adapt.
@@ -117,6 +121,8 @@ results/
   robustness.json             # E4: mean/P10 across perturbed scenarios
   forecast_summary.json       # E1: forecast backtest (MAPE) + predict-then-optimize
   replan_summary.json         # E3: disruption replan recovery
+  discount_policy_summary.json # E2: optimized markdown vs fixed 30% rule
+  telemetry_summary.json      # E5: cold-chain effect + market-price feed
   figures/                    # charts used in the deck
 ```
 

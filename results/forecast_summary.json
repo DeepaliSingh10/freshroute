@@ -1,6 +1,6 @@
 {
   "phase": "owner_A_phase2_e1_forecast",
-  "cost_model_hash": "04778f090439",
+  "cost_model_hash": "cef90379ab1f",
   "backtest": {
     "train_days": 77,
     "holdout_days": 14,

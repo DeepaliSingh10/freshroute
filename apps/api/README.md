@@ -17,6 +17,7 @@ app/
     baseline.py       # baseline strategies (fefo / margin / naive) — no clearance
     allocator.py      # LP: maximize net revenue subject to hard constraints
     discounts.py      # rule-based discount recommendation engine (M4)
+    discount_policy.py # E2: optimized markdown depth x timing under uncertainty
     replan.py         # disruption replan: committed + residual re-optimization (E3)
     types.py          # Plan / Dispatch
   forecast/
@@ -29,6 +30,8 @@ scripts/
   run_forecast.py     # E1: forecast backtest + predict-then-optimize
   run_robustness.py   # E4: Monte Carlo robustness (mean/P10)
   run_replan.py       # E3: disruption replan demo
+  run_discount_policy.py # E2: optimized markdown vs fixed rule
+  run_telemetry.py    # E5: cold-chain telemetry + market-price feed
 ```
 
 ## Setup
@@ -65,15 +68,22 @@ python scripts/run_phase1.py --write-csv --write-results
 ## What Phase 2 (part 2) adds — extensions
 - **E1 Demand forecasting** (`run_forecast.py`): transparent level × day-of-week × event model;
   holdout MAPE **17.4%** vs naive 24.7–28.7%; predict-then-optimize stays within ~1%.
+- **E2 Optimized markdown** (`run_discount_policy.py`): per at-risk batch, search depth × timing to
+  maximize expected recovered value under uncertainty; **+200,923** vs the fixed 30% rule.
 - **E3 Disruption replan** (`run_replan.py`): keep committed shipments, re-optimize the residual
   stock on the disrupted network; hub outage + 6h delay → spoilage −20.4%, net rev +213,504, 0 violations.
 - **E4 Monte Carlo robustness** (`run_robustness.py`): 30 draws × 3 scenarios; mean spoilage
   reduction −57.7% (P10 −46.3%), net-rev delta mean +331,772 (P10 +271,309), 0 violations.
+- **E5 Cold-chain telemetry + price feed** (`run_telemetry.py`): temperature excursions cost
+  10.4 batch-days of life; ignoring them gives 5 infeasible shipments (temp-aware replan: 0).
+  A market-price walk lifts net revenue 626,512 → 648,001.
 
 ```
 python scripts/run_forecast.py --write-results
 python scripts/run_robustness.py --draws 30 --write-results
 python scripts/run_replan.py --write-results
+python scripts/run_discount_policy.py --write-results
+python scripts/run_telemetry.py --write-results
 ```
 
 ## Results (see `../../results/`)
@@ -93,6 +103,4 @@ python scripts/run_replan.py --write-results
 > clearance channel converts that stranded stock into recovered revenue with no fulfillment loss.
 
 ## Next
-- Extensions E2 (discount timing/price under uncertainty) and E5 (simulated temperature / live
-  market feed).
 - Owner B (FastAPI service + tests) and Owner C (React/TS dashboard).
