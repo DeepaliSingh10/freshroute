@@ -6,18 +6,45 @@
 > exactly which batches to ship where, and when to discount — respecting shelf life, demand,
 > transport and capacity — and proves it beats their current process on the same numbers."*
 
+## 90-second script (timestamped)
+
+With the backend (`apps/api`) running, the dashboard shows **Live API** badges and real results.
+When the API is *not* running it stays fully demonstrable on clearly-labelled **demo data**
+(badge + inline notice + footer). The script below works either way and is honest about which
+mode is on screen. In demo mode do **not** read demo numbers aloud as results — say "on the demo
+dataset" / "in the demo fixture".
+
+| Time | On screen | Say |
+|------|-----------|-----|
+| 0:00–0:08 | Title / header + orange **"Live API not connected"** banner | *"A third of fresh produce is lost between farm and market. FreshRoute tells a distributor which batches to ship where, and when to discount."* |
+| 0:08–0:18 | Scenario selector → pick **`hidden_01`**; status badge shows **Live API** (or **Demo data** if the API is down) | *"The dashboard is live-connected to the planning service, or — if it's unavailable — falls back to a labelled demo dataset. It's always honest: banner, source badge, footer disclaimer."* |
+| 0:18–0:30 | Press **Optimize** → KPI cards fill in | *"The dashboard shows net revenue, spoilage, fulfillment and feasibility against a FEFO baseline. Perishability-first: the shortest-shelf-life batches are allocated first."* |
+| 0:30–0:42 | Scroll to **Baseline vs optimized** charts | *"Same cost model, both sides. Spoilage down, fulfillment up, net revenue up — and zero constraint violations."* (Say "on the demo fixture".) |
+| 0:42–0:52 | Dispatch table → click **Explain** on a low-shelf-life row | *"Every recommendation is inspectable: the verbatim reason, plus the shelf-life and lane-capacity checks and a factored price/cost/margin breakdown from the live `/explain` endpoint. No invented reasoning."* |
+| 0:52–1:02 | Discount card → **Explain recommendation** | *"Batch B-3007 expires in under a day with no feasible lane; a 30% cut recovers value instead of accepting spoilage."* |
+| 1:02–1:15 | **Sensitivity** panel → drag demand to ~1.4×, travel delay to +6h | *"Move demand or delay and the illustrative range updates. This is a disclosed local model, not a statistics claim — the label says 'Simulated'. The direction is what matters."* |
+| 1:15–1:30 | **Replan feed** → fire *Traffic delay* | *"An event produces a live plan diff with reasons from `/replan`; if the API is down it's a clearly-labelled local simulation."* Then close: *"Ship where it survives, discount where it won't."* |
+
+**Hard rule for the demo:** never present a demo/illustrative number as a verified result, and
+never attribute invented reasoning to the optimizer. If the live API is running, the same UI
+switches to **Live API** badges automatically and the numbers become real results.
+
 ## Live demo flow (2–3 min)
 
 1. **Pick a hidden scenario** (pre-loaded, seeded).
 2. **Show the baseline** KPIs: spoilage %, fulfillment %, net revenue.
-3. **Click Optimize** → show the improved KPIs and the delta banner:
-   *"21% less spoilage · +8 pts fulfillment · ₹4.2L more net revenue · 0 constraint violations."*
+3. **Click Optimize** → show the improved KPIs and the delta banner (spoilage, fulfillment, net
+   revenue, 0 violations). Read the numbers that are on screen — do not substitute placeholder
+   figures. In demo mode every value is labelled **Demo data**.
 4. **Open the dispatch plan**: perishability-first ordering; each row shows the shelf-life
    feasibility check and a plain-English reason.
-5. **Open a discount card**: *"Batch B12 — 30% off — would spoil in 1.2 days, no feasible lane."*
-6. **Drag the sensitivity slider** (demand +40% / travel +6h): plan adapts; uncertainty band
-   updates. Shows robustness.
-7. **Fire a disruption** (traffic delay / new order): `/replan` returns a diff with reasons.
+5. **Open a discount card**: e.g. batch **B-3007** (*"30% off — no feasible lane to Bengaluru
+   before it spoils"*) and its **Explain recommendation** panel.
+6. **Drag the sensitivity slider** (demand / travel delay / price shock): the illustrative range
+   updates. This is a disclosed local model, labelled *Simulated* — not a statistical claim.
+7. **Fire a disruption** (traffic delay / temp spike / capacity change): a plan diff with reasons
+   appears. With the API connected this is live `/replan`; otherwise it is a clearly-labelled
+   local simulation.
 8. Close with the **explainability + commercial workflow** slide.
 
 ## Pitch deck (7 slides max)
@@ -62,7 +89,7 @@ python scripts/run_replan.py --write-results
 python scripts/run_discount_policy.py --write-results
 python scripts/run_telemetry.py --write-results
 python scripts/run_sensitivity.py --write-results
-pytest                 # 38 tests
+pytest                 # 41 tests
 ```
 Or regenerate everything at once: `python scripts/run_all.py` (writes `results/manifest.json`).
 

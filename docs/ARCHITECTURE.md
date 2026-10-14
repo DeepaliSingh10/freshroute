@@ -120,28 +120,36 @@ Every discount output includes: `batch_id`, `rule_id`, `discount_pct`, `expected
 
 ## 7. Replanning (E3)
 
-`POST /replan` accepts `{scenario_id, blocked_origins, travel_delay_hours}` and returns the
-**morning plan**, the frozen **"do nothing"** plan and the **replanned** result — each with full
-metrics — plus `recovery` deltas. Internally: `apply_disruption` mutates the network, then
-`replan` keeps only still-valid committed shipments and re-optimizes the residual stock (with
-reduced stock, demand and lane capacity) under the same hard constraints.
+`POST /replan` is **event-driven**, matching the dashboard: it accepts
+`{scenario_id, event: {type, payload?}}` and returns `{scenario_id, plan, diff[]}` — the new
+optimized `PlanResponse` under the disruption plus a per-shipment diff (`added` / `removed` /
+`changed`) with reasons. Event types: `traffic_delay` (`{hours}`), `temp_spike`
+(`{rsl_penalty_days}`), `capacity_change` (`{factor}`), `new_order` (`{}`).
+
+Internally the event is materialized into a disrupted instance (block the largest origin's
+outbound lanes + add `travel_delay_hours` via `apply_disruption`, or shrink shelf life / lane
+capacity / bump demand), then the network is re-optimized under the same hard constraints. For
+the recovery comparison, `replan` keeps only still-valid committed shipments (reduced stock,
+demand and lane capacity) and re-optimizes the residual. The additive `recovery`,
+`morning_plan`, `no_replan` and `violations_replan` fields are retained for tooling.
 
 ## 8. API surface
 
 | Endpoint | Method | Request | Returns |
 |----------|--------|---------|---------|
-| `/health` | GET | — | status, version, `cost_model_hash` |
-| `/scenarios` | GET | — | list of scenarios with `split` + seed |
-| `/inventory` | GET | `?scenario_id=` | batches + destinations (M1) |
-| `/plan` | POST | `{scenario_id, include_clearance}` | dispatch plan + discounts + reasons (M2, M3, M4) |
-| `/evaluate` | POST | `{scenario_id, baseline}` | optimizer vs baseline metrics + deltas (M5) |
-| `/replan` | POST | `{scenario_id, blocked_origins, travel_delay_hours}` | morning/no-replan/replan + recovery (E3) |
-| `/explain` | GET | `?scenario_id=` | plain-language reason per dispatch/discount |
+| `/health` | GET | — | status, version, `config_hash` (= `cost_model_hash`) |
+| `/scenarios` | GET | — | **bare array** of scenarios with `split` + seed |
+| `/inventory` | GET | `?scenario_id=` (optional) | commodities + batches + destinations (M1) |
+| `/plan` | POST | `{scenario_id, include_clearance?}` | `{config_hash, now_ts, dispatches, discounts, leftover, validation, metrics}` (M2, M3, M4) |
+| `/evaluate` | POST | `{scenario_ids:[...], baseline?}` | `{per_scenario[], aggregate, robustness?}` (M5) |
+| `/replan` | POST | `{scenario_id, event:{type, payload?}}` | `{scenario_id, plan, diff[]}` (E3) |
+| `/explain` | POST | `{batch_id, destination_id}` | factor breakdown for one recommendation |
 | `/sensitivity` | POST | `{scenario_id, factor?}` | one-factor net-revenue curves (E4) |
 
 Unknown `scenario_id` → **404**. All responses are deterministic given `scenario_id` (seeded).
 The contract types live in `apps/api/app/api/schemas.py` (server) and
-`apps/web/src/api/types.ts` (client) — they are the frozen interface between B and C.
+`apps/web/src/api/types.ts` (client) — they are the frozen interface between B and C. The API
+was adapted to the client contract the dashboard was built against (see `WORKSTREAMS.md`).
 
 ## 9. Reproducibility
 

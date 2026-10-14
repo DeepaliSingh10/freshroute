@@ -1,17 +1,35 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// Dev server proxies /api/* to the FastAPI service so the browser sees one origin.
+const nodeEnv = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
+  ?.env;
+const API_TARGET = nodeEnv?.VITE_API_PROXY_TARGET ?? 'http://localhost:8000';
+
 export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: API_TARGET,
         changeOrigin: true,
-        rewrite: (p) => p.replace(/^\/api/, ''),
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },
   },
-})
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+          if (id.includes('recharts') || id.includes('d3-') || id.includes('victory')) {
+            return 'charts';
+          }
+          return 'vendor';
+        },
+      },
+    },
+  },
+});

@@ -46,56 +46,62 @@ Deliverables:
 
 ## Frozen interfaces (contract)
 
-> Finalized to match the shipped implementation in `apps/api/app/api/schemas.py`
-> (server) and `apps/web/src/api/types.ts` (client).
+> Single source of truth, mirrored byte-for-byte by the server models
+> (`apps/api/app/api/schemas.py`) and the client types (`apps/web/src/api/types.ts`).
+> The React dashboard was built against this contract **first**; the API was adapted to it.
+> Additive convenience fields exist on the server but are ignored by the client (TS ignores
+> unknown fields), so both stay compatible.
 
 ### `PlanResponse` (B ↔ C)
 ```ts
 interface PlanResponse {
   scenario_id: string;
-  status: string;            // "OPTIMAL" | "INFEASIBLE" | "DEGRADED"
-  metrics: Metrics;
+  config_hash: string;       // cost-model hash for reproducibility
+  now_ts: string;
   dispatches: Dispatch[];
   discounts: Discount[];
-  violations: number;        // independent checker output; 0 when feasible
+  leftover: Leftover[];
+  validation: Validation;    // independent checker output
+  metrics: Metrics;
 }
 interface Dispatch {
-  batch_id: string; commodity_name: string; destination_id: string;
-  destination_name: string; quantity_kg: number; price_per_kg: number;
-  margin_per_kg: number; travel_hours: number; is_clearance: boolean;
-  reason: string;
+  batch_id: string; commodity_id: string; destination_id: string;
+  quantity_kg: number; price_per_kg: number; effective_price_per_kg: number;
+  travel_time_hours: number; transport_cost: number; margin: number;
+  priority_rank: number; urgency_days: number; feasible: boolean; reason: string;
 }
 interface Discount {
-  batch_id: string; commodity_name: string; rule_id: string;
-  discount_pct: number; quantity_kg: number;
+  batch_id: string; rule_id: string; discount_pct: number;
   expected_recovered_value: number; reason: string;
 }
+interface Leftover { batch_id: string; quantity_kg: number; spoilage_cost: number; }
+interface Validation { violations: string[]; degraded: boolean; warnings: string[]; }
 interface Metrics {
-  method: string; status: string;
-  spoilage_kg: number; spoilage_pct: number; expired_kg: number;
-  clearance_kg: number; clearance_revenue: number;
-  fulfilled_kg: number; demand_kg: number; fulfillment_pct: number;
-  revenue: number; transport_cost: number; handling_cost: number;
-  spoilage_cost: number; net_revenue: number; violations: number;
+  spoilage_kg: number; spoilage_pct: number; fulfilled_kg: number; fulfillment_pct: number;
+  unmet_kg: number; revenue: number; transport_cost: number; handling_cost: number;
+  spoilage_cost: number; net_revenue: number;
 }
 ```
 
 ### `EvaluateResponse`, `ReplanResponse`, `ExplainResponse`, `SensitivityResponse` (B ↔ C)
 ```ts
 interface EvaluateResponse {
-  scenario_id: string; baseline: string;
-  optimizer: Metrics; baseline_metrics: Metrics;
-  compare: Record<string, number>;   // spoilage_pct_reduction, net_revenue_delta, ...
-  violations_optimizer: number;
+  per_scenario: { scenario_id: string; split: string; proposed: Metrics; baseline: Metrics }[];
+  aggregate: {
+    spoilage_pct_reduction: number; fulfillment_delta: number;
+    net_revenue_delta: number; net_revenue_delta_pct: number; violations_total: number;
+  };
+  robustness?: { net_revenue_mean: number; net_revenue_p10: number };
 }
 interface ReplanResponse {
-  scenario_id: string; blocked_origins: string[]; travel_delay_hours: number;
-  morning_plan: Metrics; no_replan: Metrics; replan: Metrics;
-  recovery: Record<string, number>; violations_replan: number;
+  scenario_id: string; plan: PlanResponse;
+  diff: { batch_id: string; destination_id?: string; change: 'added'|'removed'|'changed'; reason: string }[];
 }
 interface ExplainResponse {
-  scenario_id: string;
-  reasons: { kind: string; ref: string; reason: string }[];
+  batch_id: string; destination_id: string; recommendation: string; reason: string;
+  urgency_days?: number;
+  factors: { factor: string; value: string | number; contribution?: number; note?: string }[];
+  constraints?: { name: string; satisfied: boolean; detail?: string }[];
 }
 interface SensitivityResponse {
   scenario_id: string;
@@ -103,7 +109,21 @@ interface SensitivityResponse {
 }
 ```
 
-> C can develop against these types with a static mock; swap to the live API with one flag.
+### Other endpoints
+```ts
+GET  /health     -> { status, version, config_hash }         // client reads config_hash
+GET  /scenarios  -> Scenario[]                               // bare array
+GET  /inventory  -> { commodities: Commodity[], batches: Batch[] }
+POST /replan      body { scenario_id, event: { type, payload? } }   // event-driven (E3)
+POST /explain     body { batch_id, destination_id }                 // factor breakdown
+```
+`/replan` event types: `traffic_delay` (`{hours}`), `temp_spike` (`{rsl_penalty_days}`),
+`capacity_change` (`{factor}`), `new_order` (`{}`).
+
+> C develops against these types with a static mock; swap to the live API with one flag
+> (`VITE_USE_DEMO` / `?demo=1`). `/plan`, `/evaluate`, `/scenarios`, `/inventory`, `/health`
+> have demo fallbacks; `/explain` and `/replan` deliberately do not — the UI labels local
+> simulations instead of inventing optimizer output.
 
 ---
 

@@ -133,7 +133,25 @@ Per scenario, spoilage falls **58.8%–76.3%** vs FEFO while fulfillment stays o
   sensitivity factor chart, disruption replan panel, and a "why this plan?" explainability drawer.
 - Talks to the FastAPI service (dev proxy `/api` → `:8000`); see `apps/web/README.md`.
 
-> Remaining after Owner A/B/C: final `docs/DEMO.md` walkthrough + demo rehearsal.
+## Integration — Owner C frontend wired to Owner B API ✅ (done)
+- Merged `feature/workstream-c-frontend` into `main`, taking the teammate's authoritative
+  `apps/web` dashboard (the client types in `apps/web/src/api/types.ts` are the source of truth).
+- **Adapted the backend to the frontend's frozen contract**:
+  `/health` exposes `config_hash`; `/scenarios` returns a bare array; `/inventory` returns
+  `commodities` + `batches` (+ destinations) with `scenario_id` optional; `/plan` returns
+  `{config_hash, now_ts, dispatches, discounts, leftover, validation, metrics}` with enriched
+  dispatches (`commodity_id`, `effective_price_per_kg`, `travel_time_hours`, `transport_cost`,
+  `margin`, `priority_rank`, `urgency_days`, `feasible`); `/evaluate` takes `{scenario_ids[]}`
+  and returns `{per_scenario, aggregate, robustness?}`; `/replan` is event-driven
+  (`{scenario_id, event}` → `{scenario_id, plan, diff[]}`) for `traffic_delay` / `temp_spike` /
+  `capacity_change` / `new_order`; `/explain` is `POST {batch_id, destination_id}` with a
+  factor/constraint breakdown.
+- Updated `apps/api/tests/test_api.py` to the new contract; suite is now **41 tests, passing**.
+- Verified end-to-end: `pytest` green; `npm run typecheck` + `npm run build` clean; live smoke
+  against `uvicorn` returned 46 batches / 87 dispatches / 20 discounts / **0 violations** /
+  net revenue 572,204.63; `/evaluate` spoilage reduction 0.67 with 0 violations; and all four
+  `/replan` events produced valid plans + diffs.
+- Docs reconciled to the single frozen contract: `WORKSTREAMS.md`, `ARCHITECTURE.md`,
+  `README.md`, `apps/api/README.md`, `apps/web/README.md`, `docs/DEMO.md`.
 
-## Owner B / C
-Complete — see the sections above.
+> Remaining after integration: demo rehearsal against the live stack.

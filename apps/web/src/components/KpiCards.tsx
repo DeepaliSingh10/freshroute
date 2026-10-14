@@ -1,53 +1,122 @@
-import type { EvaluateResponse, PlanResponse } from '../types'
+import type { ReactNode } from 'react';
+import type { Metrics } from '../api/types';
+import {
+  formatCurrency,
+  formatKg,
+  formatPercent,
+  formatRatioSigned,
+  formatSignedCurrency,
+  formatSignedPoints,
+} from '../utils/format';
+import { compareToBaseline, totalCostOf, type Direction } from '../utils/metrics';
+import ViolationBadge from './ViolationBadge';
 
-interface Props {
-  plan: PlanResponse
-  evaluate?: EvaluateResponse
+interface KpiCardsProps {
+  metrics: Metrics;
+  baseline?: Metrics;
+  violations: string[];
+  degraded: boolean;
 }
 
-const fmt = (n: number, digits = 0) => n.toLocaleString(undefined, { maximumFractionDigits: digits })
+type Tone = 'good' | 'bad' | 'neutral';
 
-export default function KpiCards({ plan, evaluate }: Props) {
-  const m = plan.metrics
-  const cmp = evaluate?.compare
-  const spoilRed = cmp ? cmp.spoilage_pct_reduction * 100 : undefined
-  const revDelta = cmp ? cmp.net_revenue_delta : undefined
+interface KpiCardProps {
+  label: string;
+  value: string;
+  sub?: string;
+  delta?: ReactNode;
+  tone?: Tone;
+  accent: string;
+}
+
+function toneOf(direction: Direction | undefined): Tone {
+  return direction ? direction.tone : 'neutral';
+}
+
+function DeltaArrow({ direction }: { direction: Direction }) {
+  if (direction.improved) return <span aria-hidden="true">▲</span>;
+  if (direction.regressed) return <span aria-hidden="true">▼</span>;
+  return <span aria-hidden="true">•</span>;
+}
+
+function KpiCard({ label, value, sub, delta, tone = 'neutral', accent }: KpiCardProps) {
+  return (
+    <article className="kpi-card" style={{ ['--accent' as string]: accent }}>
+      <header className="kpi-card__header">
+        <span className="kpi-card__label">{label}</span>
+      </header>
+      <p className="kpi-card__value">{value}</p>
+      {sub ? <p className="kpi-card__sub">{sub}</p> : null}
+      {delta ? <p className={`kpi-card__delta kpi-card__delta--${tone}`}>{delta}</p> : null}
+    </article>
+  );
+}
+
+export default function KpiCards({ metrics, baseline, violations, degraded }: KpiCardsProps) {
+  const deltas = baseline ? compareToBaseline(metrics, baseline) : null;
 
   return (
-    <div className="grid kpis">
-      <div className="card kpi">
-        <h3>Spoilage</h3>
-        <div className="value">{fmt(m.spoilage_kg)} kg</div>
-        <div className={`delta ${spoilRed !== undefined && spoilRed < 0 ? 'neg' : ''}`}>
-          {spoilRed !== undefined ? `${spoilRed >= 0 ? '−' : '+'}${Math.abs(spoilRed).toFixed(1)}% vs FEFO` : '—'}
-        </div>
-      </div>
+    <section className="kpi-grid" aria-label="Key performance indicators">
+      <KpiCard
+        label="Net revenue"
+        value={formatCurrency(metrics.net_revenue)}
+        sub={`Revenue ${formatCurrency(metrics.revenue)} · costs ${formatCurrency(totalCostOf(metrics))}`}
+        accent="#0f766e"
+        tone={toneOf(deltas?.netRevenue.direction)}
+        delta={
+          deltas ? (
+            <>
+              <DeltaArrow direction={deltas.netRevenue.direction} />
+              {formatSignedCurrency(deltas.netRevenue.delta)}
+              {deltas.netRevenue.deltaPct !== null
+                ? ` (${formatRatioSigned(deltas.netRevenue.deltaPct)})`
+                : ''}{' '}
+              vs baseline
+            </>
+          ) : undefined
+        }
+      />
 
-      <div className="card kpi">
-        <h3>Fulfillment</h3>
-        <div className="value">{(m.fulfillment_pct * 100).toFixed(1)}%</div>
-        <div className="delta">{fmt(m.fulfilled_kg)} / {fmt(m.demand_kg)} kg demand</div>
-      </div>
+      <KpiCard
+        label="Spoilage"
+        value={formatKg(metrics.spoilage_kg)}
+        sub={`${formatPercent(metrics.spoilage_pct)} of inventory · cost ${formatCurrency(
+          metrics.spoilage_cost,
+        )}`}
+        accent="#b45309"
+        tone={toneOf(deltas?.spoilage.direction)}
+        delta={
+          deltas && deltas.spoilageReductionPct !== null ? (
+            <>
+              <DeltaArrow direction={deltas.spoilage.direction} />
+              {formatRatioSigned(deltas.spoilageReductionPct)} spoilage vs baseline
+            </>
+          ) : undefined
+        }
+      />
 
-      <div className="card kpi">
-        <h3>Net revenue</h3>
-        <div className="value">₹{fmt(m.net_revenue)}</div>
-        <div className="delta">{revDelta !== undefined ? `+₹${fmt(revDelta)} vs FEFO` : '—'}</div>
-      </div>
+      <KpiCard
+        label="Demand fulfillment"
+        value={formatPercent(metrics.fulfillment_pct)}
+        sub={`${formatKg(metrics.fulfilled_kg)} served · ${formatKg(metrics.unmet_kg)} unmet`}
+        accent="#1d4ed8"
+        tone={toneOf(deltas?.fulfillment.direction)}
+        delta={
+          deltas ? (
+            <>
+              <DeltaArrow direction={deltas.fulfillment.direction} />
+              {formatSignedPoints(deltas.fulfillment.delta)} vs baseline
+            </>
+          ) : undefined
+        }
+      />
 
-      <div className="card kpi">
-        <h3>Recovered (clearance)</h3>
-        <div className="value">{fmt(m.clearance_kg)} kg</div>
-        <div className="delta">₹{fmt(m.clearance_revenue)} salvaged</div>
-      </div>
-
-      <div className="card kpi">
-        <h3>Hard violations</h3>
-        <div className="value">{plan.violations}</div>
-        <div className={`delta ${plan.violations > 0 ? 'neg' : ''}`}>
-          {plan.violations === 0 ? 'all constraints satisfied' : 'check failed'}
-        </div>
-      </div>
-    </div>
-  )
+      <article className="kpi-card kpi-card--badge" style={{ ['--accent' as string]: '#15803d' }}>
+        <header className="kpi-card__header">
+          <span className="kpi-card__label">Feasibility</span>
+        </header>
+        <ViolationBadge violations={violations} degraded={degraded} size="lg" />
+      </article>
+    </section>
+  );
 }

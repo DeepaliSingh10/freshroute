@@ -1,7 +1,8 @@
 # apps/api — FreshRoute backend
 
 Python 3.11+ · OR-Tools (GLOP) · numpy/pandas · FastAPI.
-Owner A (data + optimizer) and Owner B (HTTP service + tests) are **done**.
+Owner A (data + optimizer), Owner B (HTTP service + tests) and Owner C (dashboard, see
+`../web`) are **done**. The API serves the dashboard's frozen contract.
 
 ## Layout
 ```
@@ -123,28 +124,33 @@ uvicorn app.main:app --reload --port 8000
 
 | Method | Path | Body / query | Returns |
 |--------|------|--------------|---------|
-| GET  | `/health` | — | status, version, `cost_model_hash` |
-| GET  | `/scenarios` | — | available scenarios (id, seed, split) |
-| GET  | `/inventory` | `?scenario_id=` | batch count + total inventory |
-| POST | `/plan` | `{scenario_id, include_clearance}` | metrics, dispatches (with reasons), discounts |
-| POST | `/evaluate` | `{scenario_id, baseline}` | optimizer vs baseline metrics + deltas |
-| POST | `/replan` | `{scenario_id, blocked_origins, travel_delay_hours}` | morning/no-replan/replan + recovery |
-| GET  | `/explain` | `?scenario_id=` | plain-language reason per dispatch/discount |
+| GET  | `/health` | — | status, version, `config_hash` (= `cost_model_hash`) |
+| GET  | `/scenarios` | — | **bare array** of scenarios (id, seed, split, perturbation_profile) |
+| GET  | `/inventory` | `?scenario_id=` (optional) | `{commodities, batches, destinations, ...}` |
+| POST | `/plan` | `{scenario_id, include_clearance?}` | `{config_hash, now_ts, dispatches, discounts, leftover, validation, metrics}` |
+| POST | `/evaluate` | `{scenario_ids:[...], baseline?}` | `{per_scenario[], aggregate, robustness?}` |
+| POST | `/replan` | `{scenario_id, event:{type, payload?}}` | `{scenario_id, plan, diff[]}` (E3 event-driven) |
+| POST | `/explain` | `{batch_id, destination_id}` | factor breakdown for one recommendation |
 | POST | `/sensitivity` | `{scenario_id, factor?}` | one-factor net-revenue curves |
 
 Unknown scenario ids return **404**. CORS is open (`*`) so the Vite dev server or any static
-build can call it directly. The React dashboard (`apps/web`) consumes exactly these endpoints.
+build can call it directly. The React dashboard (`apps/web`) consumes exactly these endpoints;
+this service was adapted to the dashboard's frozen contract (see `docs/WORKSTREAMS.md`
+§ "Frozen interfaces"). `/replan` event types: `traffic_delay` (`{hours}`),
+`temp_spike` (`{rsl_penalty_days}`), `capacity_change` (`{factor}`), `new_order` (`{}`).
 
 ## Tests
 
 ```
 pip install -r requirements.txt
-pytest                        # 38 tests
+pytest                        # 41 tests
 ```
 
 Covers the cost-model loader, LP optimizer, all baseline strategies, deterministic output,
 degraded/perturbed data, disruption replanning, the forecast backtest, the reproducibility
-manifest, and every HTTP endpoint (including 404 and `/plan` determinism).
+manifest, and every HTTP endpoint against the frozen contract (including the bare-array
+`/scenarios`, multi-scenario `/evaluate`, event-driven `/replan`, POST `/explain`, 404s, and
+`/plan` determinism).
 
 ## Reproducibility
 
